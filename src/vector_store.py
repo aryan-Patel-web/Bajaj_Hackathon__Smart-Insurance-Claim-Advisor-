@@ -12,6 +12,9 @@ from cassandra.auth import PlainTextAuthProvider
 import uuid
 from datetime import datetime
 import json
+import time
+import requests
+from urllib.parse import urljoin
 
 # Document processing libraries
 import PyPDF2
@@ -221,37 +224,101 @@ class DocumentProcessor:
 class AstraDBIngester:
     """Handles ingestion of processed chunks into Astra DB"""
 
-    def __init__(self, token: str, database_id: str, keyspace: str = "insurance_advisor"):
+    def __init__(self, token: str, database_id: str, region: str = "us-east1", keyspace: str = None):
         self.token = token
         self.database_id = database_id
-        self.keyspace = keyspace
+        self.region = region
+        self.keyspace = keyspace or "default_keyspace"
         self.session = None
+        self.cluster = None
         self.connect()
+
+    def get_secure_connect_bundle(self) -> str:
+        """Download secure connect bundle if not present"""
+        bundle_path = f"secure-connect-{self.database_id}.zip"
+        
+        if not os.path.exists(bundle_path):
+            try:
+                # Download the secure connect bundle
+                url = f"https://datastax-cluster-config-prod.s3.us-west-2.amazonaws.com/{self.database_id}/secure-connect-{self.database_id}.zip"
+                
+                # Alternative: Use Astra DB REST API to get the bundle
+                headers = {
+                    'Authorization': f'Bearer {self.token}',
+                    'Content-Type': 'application/json'
+                }
+                
+                # First, try to get database info
+                db_info_url = f"https://api.astra.datastax.com/v2/databases/{self.database_id}"
+                response = requests.get(db_info_url, headers=headers)
+                
+                if response.status_code == 200:
+                    db_info = response.json()
+                    # Get the secure bundle download URL
+                    bundle_url = f"https://api.astra.datastax.com/v2/databases/{self.database_id}/secureBundleURL"
+                    bundle_response = requests.post(bundle_url, headers=headers)
+                    
+                    if bundle_response.status_code == 200:
+                        download_url = bundle_response.json()['downloadURL']
+                        
+                        # Download the bundle
+                        bundle_data = requests.get(download_url)
+                        with open(bundle_path, 'wb') as f:
+                            f.write(bundle_data.content)
+                        
+                        logger.info(f"Downloaded secure connect bundle: {bundle_path}")
+                    else:
+                        logger.error(f"Failed to get bundle URL: {bundle_response.text}")
+                        return None
+                else:
+                    logger.error(f"Failed to get database info: {response.text}")
+                    return None
+                    
+            except Exception as e:
+                logger.error(f"Error downloading secure connect bundle: {e}")
+                return None
+        
+        return bundle_path
 
     def connect(self):
         """Establish connection to Astra DB"""
         try:
+            # Get or download secure connect bundle
+            bundle_path = self.get_secure_connect_bundle()
+            if not bundle_path:
+                logger.error("Failed to get secure connect bundle")
+                return
+
             cloud_config = {
-                'secure_connect_bundle': f'secure-connect-{self.database_id}.zip'
+                'secure_connect_bundle': bundle_path
             }
 
             auth_provider = PlainTextAuthProvider('token', self.token)
-            cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
-            self.session = cluster.connect()
+            self.cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
+            self.session = self.cluster.connect()
 
-            # Create keyspace if it doesn't exist
             if self.session:
-                self.session.execute(f"""
-                    CREATE KEYSPACE IF NOT EXISTS {self.keyspace}
-                    WITH replication = {{'class': 'SimpleStrategy', 'replication_factor': 1}}
-                """)
+                # List available keyspaces
+                keyspaces_result = self.session.execute("SELECT keyspace_name FROM system_schema.keyspaces")
+                available_keyspaces = [row.keyspace_name for row in keyspaces_result]
+                logger.info(f"Available keyspaces: {available_keyspaces}")
+
+                # Use existing keyspace or create new one
+                if self.keyspace not in available_keyspaces:
+                    logger.info(f"Creating keyspace: {self.keyspace}")
+                    self.session.execute(f"""
+                        CREATE KEYSPACE IF NOT EXISTS {self.keyspace}
+                        WITH replication = {{'class': 'SimpleStrategy', 'replication_factor': 1}}
+                    """)
+                    # Wait for keyspace creation
+                    time.sleep(5)
 
                 self.session.set_keyspace(self.keyspace)
 
                 # Create tables
                 self.create_tables()
 
-                logger.info("Connected to Astra DB successfully")
+                logger.info(f"Connected to Astra DB successfully using keyspace: {self.keyspace}")
             else:
                 logger.error("Failed to connect to Astra DB: session is None")
         except Exception as e:
@@ -288,6 +355,19 @@ class AstraDBIngester:
                     )
                 """)
 
+                # Document metadata table
+                self.session.execute("""
+                    CREATE TABLE IF NOT EXISTS document_metadata (
+                        document_id text PRIMARY KEY,
+                        filename text,
+                        document_type text,
+                        file_size bigint,
+                        processed_at timestamp,
+                        total_chunks int,
+                        processing_status text
+                    )
+                """)
+
                 logger.info("Tables created successfully")
             else:
                 logger.error("Cannot create tables: session is None")
@@ -298,30 +378,72 @@ class AstraDBIngester:
     def ingest_chunks(self, chunks: List[DocumentChunk]) -> bool:
         """Ingest document chunks into Astra DB"""
         try:
-            if self.session:
-                insert_stmt = self.session.prepare("""
-                    INSERT INTO document_chunks (chunk_id, content, embedding, metadata, document_type, filename, created_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                """)
-
-                for chunk in chunks:
-                    self.session.execute(insert_stmt, [
-                        chunk.chunk_id,
-                        chunk.content,
-                        chunk.embedding,
-                        json.dumps(chunk.metadata),
-                        chunk.metadata.get('document_type', 'unknown'),
-                        chunk.metadata.get('filename', 'unknown'),
-                        datetime.now()
-                    ])
-
-                logger.info(f"Ingested {len(chunks)} chunks into Astra DB")
-                return True
-            else:
+            if not self.session:
                 logger.error("Cannot ingest chunks: session is None")
                 return False
+
+            insert_stmt = self.session.prepare("""
+                INSERT INTO document_chunks (chunk_id, content, embedding, metadata, document_type, filename, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """)
+
+            batch_size = 100
+            successful_inserts = 0
+            
+            for i in range(0, len(chunks), batch_size):
+                batch_chunks = chunks[i:i + batch_size]
+                
+                try:
+                    for chunk in batch_chunks:
+                        self.session.execute(insert_stmt, [
+                            chunk.chunk_id,
+                            chunk.content,
+                            chunk.embedding,
+                            json.dumps(chunk.metadata),
+                            chunk.metadata.get('document_type', 'unknown'),
+                            chunk.metadata.get('filename', 'unknown'),
+                            datetime.now()
+                        ])
+                        successful_inserts += 1
+                    
+                    logger.info(f"Ingested batch {i//batch_size + 1}: {len(batch_chunks)} chunks")
+                    
+                except Exception as e:
+                    logger.error(f"Error ingesting batch {i//batch_size + 1}: {e}")
+                    continue
+
+            logger.info(f"Successfully ingested {successful_inserts} out of {len(chunks)} chunks into Astra DB")
+            return successful_inserts > 0
+        
         except Exception as e:
             logger.error(f"Error ingesting chunks: {e}")
+            return False
+
+    def store_document_metadata(self, document_info: Dict[str, Any]) -> bool:
+        """Store document metadata"""
+        try:
+            if not self.session:
+                logger.error("Cannot store metadata: session is None")
+                return False
+
+            insert_stmt = self.session.prepare("""
+                INSERT INTO document_metadata (document_id, filename, document_type, file_size, processed_at, total_chunks, processing_status)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """)
+
+            self.session.execute(insert_stmt, [
+                document_info['document_id'],
+                document_info['filename'],
+                document_info['document_type'],
+                document_info['file_size'],
+                datetime.now(),
+                document_info['total_chunks'],
+                document_info['processing_status']
+            ])
+
+            return True
+        except Exception as e:
+            logger.error(f"Error storing document metadata: {e}")
             return False
 
     def get_chunk_count(self) -> int:
@@ -337,29 +459,65 @@ class AstraDBIngester:
             logger.error(f"Error getting chunk count: {e}")
             return 0
 
+    def close(self):
+        """Close database connection"""
+        try:
+            if self.session:
+                self.session.shutdown()
+            if self.cluster:
+                self.cluster.shutdown()
+            logger.info("Database connection closed")
+        except Exception as e:
+            logger.error(f"Error closing database connection: {e}")
+
 def ingest_documents(file_paths: List[str], astra_config: Dict[str, str]) -> bool:
     """Main function to ingest multiple documents"""
+    ingester = None
     try:
         # Initialize processor and ingester
         processor = DocumentProcessor()
         ingester = AstraDBIngester(
             token=astra_config['token'],
             database_id=astra_config['database_id'],
-            keyspace=astra_config.get('keyspace', 'insurance_advisor')
+            region=astra_config.get('region', 'us-east1'),
+            keyspace=astra_config.get('keyspace', 'insurance_docs')
         )
 
         all_chunks = []
+        document_metadata = []
 
         # Process each document
         for file_path in file_paths:
+            if not os.path.exists(file_path):
+                logger.warning(f"File not found: {file_path}")
+                continue
+
             logger.info(f"Processing document: {file_path}")
             chunks = processor.process_document(file_path)
-            all_chunks.extend(chunks)
+            
+            if chunks:
+                all_chunks.extend(chunks)
+                
+                # Store document metadata
+                doc_metadata = {
+                    'document_id': str(uuid.uuid4()),
+                    'filename': Path(file_path).name,
+                    'document_type': chunks[0].metadata.get('document_type', 'unknown'),
+                    'file_size': os.path.getsize(file_path),
+                    'total_chunks': len(chunks),
+                    'processing_status': 'completed'
+                }
+                document_metadata.append(doc_metadata)
 
         # Ingest all chunks
         if all_chunks:
             success = ingester.ingest_chunks(all_chunks)
+            
             if success:
+                # Store document metadata
+                for doc_info in document_metadata:
+                    ingester.store_document_metadata(doc_info)
+                
                 logger.info(f"Successfully ingested {len(all_chunks)} chunks from {len(file_paths)} documents")
                 return True
 
@@ -368,18 +526,38 @@ def ingest_documents(file_paths: List[str], astra_config: Dict[str, str]) -> boo
     except Exception as e:
         logger.error(f"Error in document ingestion: {e}")
         return False
+    finally:
+        if ingester:
+            ingester.close()
+
+def setup_logging(log_level: str = "INFO"):
+    """Setup logging configuration"""
+    logging.basicConfig(
+        level=getattr(logging, log_level.upper()),
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler('document_ingestion.log'),
+            logging.StreamHandler()
+        ]
+    )
 
 # Example usage
 if __name__ == "__main__":
-    # Configure logging
-    logging.basicConfig(level=logging.INFO)
+    # Setup logging
+    setup_logging("INFO")
 
     # Example configuration
     astra_config = {
         'token': os.getenv('ASTRA_DB_APPLICATION_TOKEN'),
         'database_id': os.getenv('ASTRA_DB_ID'),
-        'keyspace': 'insurance_advisor'
+        'region': os.getenv('ASTRA_DB_REGION', 'us-east1'),
+        'keyspace': os.getenv('ASTRA_DB_KEYSPACE', 'insurance_docs')
     }
+
+    # Validate configuration
+    if not astra_config['token'] or not astra_config['database_id']:
+        logger.error("Missing required environment variables: ASTRA_DB_APPLICATION_TOKEN, ASTRA_DB_ID")
+        exit(1)
 
     # Example file paths
     file_paths = [
@@ -388,5 +566,18 @@ if __name__ == "__main__":
         'data/documents/terms.pptx'
     ]
 
-    success = ingest_documents(file_paths, astra_config)
-    print(f"Ingestion {'successful' if success else 'failed'}")
+    # Filter existing files
+    existing_files = [path for path in file_paths if os.path.exists(path)]
+    
+    if not existing_files:
+        logger.warning("No files found to process")
+        exit(1)
+
+    logger.info(f"Starting ingestion of {len(existing_files)} files")
+    success = ingest_documents(existing_files, astra_config)
+    
+    if success:
+        logger.info("Document ingestion completed successfully")
+    else:
+        logger.error("Document ingestion failed")
+        exit(1)

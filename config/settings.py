@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Settings(BaseSettings):
+    astra_db_token: str = Field(validation_alias="ASTRA_DB_TOKEN")
+    astra_db_database_id: str = Field(validation_alias="ASTRA_DB_DATABASE_ID")
     app_name: str = Field(default="Smart Insurance Claim Advisor", validation_alias="APP_NAME")
     app_version: str = Field(default="1.0.0", validation_alias="APP_VERSION")
     log_level: str = Field(default="INFO", validation_alias="LOG_LEVEL")
@@ -43,7 +45,7 @@ class Settings(BaseSettings):
     retry_delay: int = Field(default=1, validation_alias="RETRY_DELAY")
 
     log_format: str = Field(default="%(asctime)s - %(name)s - %(levelname)s - %(message)s", validation_alias="LOG_FORMAT")
-    log_file: str = Field(default="insurance_advisor.log", validation_alias="LOG_FILE")
+    log_file: str = Field(default="insurance_claims.log", validation_alias="LOG_FILE")
 
     debug_mode: bool = Field(default=False, validation_alias="DEBUG_MODE")
     verbose_logging: bool = Field(default=False, validation_alias="VERBOSE_LOGGING")
@@ -55,12 +57,17 @@ class Settings(BaseSettings):
         env_file = ".env"
         env_file_encoding = "utf-8"
         case_sensitive = False
+        extra = "ignore"  # Ignore extra environment variables
 
     def validate_configuration(self) -> bool:
         if not self.astra_db_application_token:
             raise ValueError("ASTRA_DB_APPLICATION_TOKEN is required")
         if not self.astra_db_api_endpoint:
             raise ValueError("ASTRA_DB_API_ENDPOINT is required")
+        if not self.astra_db_token:
+            raise ValueError("ASTRA_DB_TOKEN is required")
+        if not self.astra_db_database_id:
+            raise ValueError("ASTRA_DB_DATABASE_ID is required")
         if not self.groq_api_key:
             raise ValueError("GROQ_API_KEY is required")
         if self.chunk_size <= 0:
@@ -97,6 +104,8 @@ settings = Settings(
     astra_db_application_token=os.getenv("ASTRA_DB_APPLICATION_TOKEN", ""),
     astra_db_api_endpoint=os.getenv("ASTRA_DB_API_ENDPOINT", ""),
     astra_db_keyspace=os.getenv("ASTRA_DB_KEYSPACE", "insurance_claims"),
+    astra_db_token=os.getenv("ASTRA_DB_TOKEN", ""),
+    astra_db_database_id=os.getenv("ASTRA_DB_DATABASE_ID", ""),
     groq_api_key=os.getenv("GROQ_API_KEY", ""),
     huggingface_api_key=os.getenv("HUGGINGFACE_API_KEY"),
     embedding_model=os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2"),
@@ -117,7 +126,7 @@ settings = Settings(
     max_retries=int(os.getenv("MAX_RETRIES", 3)),
     retry_delay=int(os.getenv("RETRY_DELAY", 1)),
     log_format=os.getenv("LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s"),
-    log_file=os.getenv("LOG_FILE", "insurance_advisor.log"),
+    log_file=os.getenv("LOG_FILE", "insurance_claims.log"),
     debug_mode=os.getenv("DEBUG_MODE", "False").lower() == "true",
     verbose_logging=os.getenv("VERBOSE_LOGGING", "False").lower() == "true",
     rate_limit_requests=int(os.getenv("RATE_LIMIT_REQUESTS", 100)),

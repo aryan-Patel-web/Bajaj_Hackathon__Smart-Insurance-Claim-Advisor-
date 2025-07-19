@@ -1,0 +1,225 @@
+2025-07-19 03:37:21,505 - insurance_claim_advisor - INFO - logging_config:69 - Parsing query: summarize  what are benefits...
+2025-07-19 03:37:21,509 - insurance_claim_advisor - INFO - logging_config:69 - Parsed query with confidence: 0.00
+2025-07-19 04:09:27,348 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:09:27,352 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:09:27,352 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:09:38,794 - __main__ - INFO - Enhanced application initialized successfully
+2025-07-19 04:09:53,515 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:09:53,528 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:09:53,529 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:09:59,274 - __main__ - INFO - Enhanced application initialized successfully
+2025-07-19 04:10:10,565 - src.ingest - INFO - Processed 16 chunks from Final_Policy Docs_LIC's Jeevan Labh_V03_website.pdf
+2025-07-19 04:10:32,364 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:10:32,393 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:10:32,395 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:10:38,628 - __main__ - INFO - Enhanced application initialized successfully
+2025-07-19 04:10:49,899 - src.ingest - INFO - Processed 16 chunks from Final_Policy Docs_LIC's Jeevan Labh_V03_website.pdf
+2025-07-19 04:10:54,423 - __main__ - ERROR - Query processing error: `st.session_state.main_chat_input` cannot be modified after the widget with key `main_chat_input` is instantiated.
+2025-07-19 04:11:11,384 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:11:11,420 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:11:11,422 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:11:16,735 - __main__ - INFO - Enhanced application initialized successfully
+2025-07-19 04:11:21,281 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:11:21,315 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:11:21,317 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:11:28,068 - __main__ - INFO - Enhanced application initialized successfully
+2025-07-19 04:11:31,536 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:11:31,541 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:11:31,541 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:11:35,721 - __main__ - INFO - Enhanced application initialized successfully
+2025-07-19 04:11:45,379 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:11:45,380 - __main__ - INFO - Application components initialized successfully
+2025-07-19 04:11:53,217 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:11:53,217 - __main__ - INFO - Application components initialized successfully
+2025-07-19 04:12:02,592 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:12:02,593 - __main__ - INFO - Application components initialized successfully
+2025-07-19 04:12:02,604 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:12:02,604 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:12:09,387 - src.vector_store - INFO - Processed 3 chunks from CIS _Jeevan Labh_736.pdf
+2025-07-19 04:12:11,704 - cassandra.cluster - WARNING - Downgrading core protocol version from 66 to 65 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:9e3a5bee-3d95-3bf7-90f5-09bd2177324b. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:12:12,884 - cassandra.cluster - WARNING - Downgrading core protocol version from 65 to 5 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:9e3a5bee-3d95-3bf7-90f5-09bd2177324b. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:12:14,294 - cassandra.cluster - WARNING - Downgrading core protocol version from 5 to 4 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:9e3a5bee-3d95-3bf7-90f5-09bd2177324b. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:12:17,171 - cassandra.policies - INFO - Using datacenter 'us-east-2' for DCAwareRoundRobinPolicy (via host '2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:9e3a5bee-3d95-3bf7-90f5-09bd2177324b'); if incorrect, please specify a local_dc to the constructor, or limit contact points to local cluster nodes
+2025-07-19 04:12:23,375 - src.vector_store - INFO - Available keyspaces: ['system_auth', 'system_schema', 'datastax_sla', 'default_keyspace', 'system', 'system_traces', 'data_endpoint_auth', 'insurance_claims']
+2025-07-19 04:12:24,990 - src.vector_store - INFO - Tables created successfully
+2025-07-19 04:12:24,990 - src.vector_store - INFO - Connected to Astra DB successfully using keyspace: default_keyspace
+2025-07-19 04:12:25,934 - cassandra.protocol - WARNING - Server warning: Detected collection embedding with 384 items, greater than the maximum recommended (20)
+2025-07-19 04:12:26,541 - src.vector_store - INFO - Ingested batch 1: 3 chunks
+2025-07-19 04:12:26,542 - src.vector_store - INFO - Successfully ingested 3 out of 3 chunks into Astra DB
+2025-07-19 04:12:56,663 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:12:56,796 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:12:56,797 - __main__ - INFO - Application components initialized successfully
+2025-07-19 04:12:56,808 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:12:56,808 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:13:02,474 - src.vector_store - INFO - Processed 3 chunks from CIS _Jeevan Labh_736.pdf
+2025-07-19 04:13:05,358 - cassandra.cluster - WARNING - Downgrading core protocol version from 66 to 65 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:98a2cd7e-fa1b-3950-942e-42af495c4248. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:13:06,628 - cassandra.cluster - WARNING - Downgrading core protocol version from 65 to 5 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:98a2cd7e-fa1b-3950-942e-42af495c4248. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:13:08,058 - cassandra.cluster - WARNING - Downgrading core protocol version from 5 to 4 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:98a2cd7e-fa1b-3950-942e-42af495c4248. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:13:11,253 - cassandra.policies - INFO - Using datacenter 'us-east-2' for DCAwareRoundRobinPolicy (via host '2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:98a2cd7e-fa1b-3950-942e-42af495c4248'); if incorrect, please specify a local_dc to the constructor, or limit contact points to local cluster nodes
+2025-07-19 04:13:17,827 - src.vector_store - INFO - Available keyspaces: ['system_auth', 'system_schema', 'datastax_sla', 'default_keyspace', 'system', 'system_traces', 'data_endpoint_auth', 'insurance_claims']
+2025-07-19 04:13:19,383 - src.vector_store - INFO - Tables created successfully
+2025-07-19 04:13:19,383 - src.vector_store - INFO - Connected to Astra DB successfully using keyspace: default_keyspace
+2025-07-19 04:13:20,909 - src.vector_store - INFO - Ingested batch 1: 3 chunks
+2025-07-19 04:13:20,909 - src.vector_store - INFO - Successfully ingested 3 out of 3 chunks into Astra DB
+2025-07-19 04:13:20,910 - insurance_claim_advisor - INFO - logging_config:69 - Parsing query: Suicide Exclusion...
+2025-07-19 04:13:20,910 - insurance_claim_advisor - INFO - Parsing query: Suicide Exclusion...
+2025-07-19 04:13:20,913 - insurance_claim_advisor - INFO - logging_config:69 - Parsed query with confidence: 0.00
+2025-07-19 04:13:20,913 - insurance_claim_advisor - INFO - Parsed query with confidence: 0.00
+2025-07-19 04:13:20,913 - src.llm_handler - ERROR - Quick explanation error: 'ParsedQuery' object has no attribute 'lower'
+2025-07-19 04:13:23,151 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-19 04:14:39,800 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:14:39,801 - __main__ - INFO - Application components initialized successfully
+2025-07-19 04:14:39,814 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:14:39,814 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:14:45,701 - src.vector_store - INFO - Processed 3 chunks from CIS _Jeevan Labh_736.pdf
+2025-07-19 04:14:49,214 - cassandra.cluster - WARNING - Downgrading core protocol version from 66 to 65 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:00958fd0-af98-391f-9f51-7e3fe763da5c. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:14:50,774 - cassandra.cluster - WARNING - Downgrading core protocol version from 65 to 5 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:00958fd0-af98-391f-9f51-7e3fe763da5c. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:14:52,212 - cassandra.cluster - WARNING - Downgrading core protocol version from 5 to 4 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:00958fd0-af98-391f-9f51-7e3fe763da5c. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:14:55,412 - cassandra.policies - INFO - Using datacenter 'us-east-2' for DCAwareRoundRobinPolicy (via host '2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:00958fd0-af98-391f-9f51-7e3fe763da5c'); if incorrect, please specify a local_dc to the constructor, or limit contact points to local cluster nodes
+2025-07-19 04:15:04,853 - src.vector_store - INFO - Available keyspaces: ['system_auth', 'system_schema', 'datastax_sla', 'default_keyspace', 'system', 'system_traces', 'data_endpoint_auth', 'insurance_claims']
+2025-07-19 04:15:06,591 - src.vector_store - INFO - Tables created successfully
+2025-07-19 04:15:06,592 - src.vector_store - INFO - Connected to Astra DB successfully using keyspace: default_keyspace
+2025-07-19 04:15:08,213 - src.vector_store - INFO - Ingested batch 1: 3 chunks
+2025-07-19 04:15:08,213 - src.vector_store - INFO - Successfully ingested 3 out of 3 chunks into Astra DB
+2025-07-19 04:15:08,225 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:15:08,225 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:15:13,110 - src.vector_store - INFO - Processed 3 chunks from CIS _Jeevan Labh_736.pdf
+2025-07-19 04:15:15,495 - cassandra.cluster - WARNING - Downgrading core protocol version from 66 to 65 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:0669df0f-031f-383e-b452-67a9679bbc6a. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:15:17,006 - cassandra.cluster - WARNING - Downgrading core protocol version from 65 to 5 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:0669df0f-031f-383e-b452-67a9679bbc6a. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:15:18,614 - cassandra.cluster - WARNING - Downgrading core protocol version from 5 to 4 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:0669df0f-031f-383e-b452-67a9679bbc6a. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:15:21,821 - cassandra.policies - INFO - Using datacenter 'us-east-2' for DCAwareRoundRobinPolicy (via host '2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:0669df0f-031f-383e-b452-67a9679bbc6a'); if incorrect, please specify a local_dc to the constructor, or limit contact points to local cluster nodes
+2025-07-19 04:15:25,178 - src.vector_store - INFO - Available keyspaces: ['system_auth', 'system_schema', 'datastax_sla', 'default_keyspace', 'system', 'system_traces', 'data_endpoint_auth', 'insurance_claims']
+2025-07-19 04:15:26,728 - src.vector_store - INFO - Tables created successfully
+2025-07-19 04:15:26,729 - src.vector_store - INFO - Connected to Astra DB successfully using keyspace: default_keyspace
+2025-07-19 04:15:28,233 - src.vector_store - INFO - Ingested batch 1: 3 chunks
+2025-07-19 04:15:28,234 - src.vector_store - INFO - Successfully ingested 3 out of 3 chunks into Astra DB
+2025-07-19 04:15:33,486 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:15:33,487 - __main__ - INFO - Application components initialized successfully
+2025-07-19 04:15:33,501 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:15:33,502 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:15:39,785 - src.vector_store - INFO - Processed 3 chunks from CIS _Jeevan Labh_736.pdf
+2025-07-19 04:15:43,412 - cassandra.cluster - WARNING - Downgrading core protocol version from 66 to 65 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:678e6a1d-e5b1-3cba-b949-7bfaf823957f. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:15:44,844 - cassandra.cluster - WARNING - Downgrading core protocol version from 65 to 5 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:678e6a1d-e5b1-3cba-b949-7bfaf823957f. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:15:46,375 - cassandra.cluster - WARNING - Downgrading core protocol version from 5 to 4 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:678e6a1d-e5b1-3cba-b949-7bfaf823957f. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:15:49,494 - cassandra.policies - INFO - Using datacenter 'us-east-2' for DCAwareRoundRobinPolicy (via host '2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:678e6a1d-e5b1-3cba-b949-7bfaf823957f'); if incorrect, please specify a local_dc to the constructor, or limit contact points to local cluster nodes
+2025-07-19 04:15:53,202 - src.vector_store - INFO - Available keyspaces: ['system_auth', 'system_schema', 'datastax_sla', 'default_keyspace', 'system', 'system_traces', 'data_endpoint_auth', 'insurance_claims']
+2025-07-19 04:15:54,843 - src.vector_store - INFO - Tables created successfully
+2025-07-19 04:15:54,843 - src.vector_store - INFO - Connected to Astra DB successfully using keyspace: default_keyspace
+2025-07-19 04:15:56,456 - src.vector_store - INFO - Ingested batch 1: 3 chunks
+2025-07-19 04:15:56,456 - src.vector_store - INFO - Successfully ingested 3 out of 3 chunks into Astra DB
+2025-07-19 04:15:56,464 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:15:56,464 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:16:00,496 - src.vector_store - INFO - Processed 3 chunks from CIS _Jeevan Labh_736.pdf
+2025-07-19 04:16:03,583 - cassandra.cluster - WARNING - Downgrading core protocol version from 66 to 65 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:0750e59f-441b-37bb-b0a7-e097c5d725f7. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:16:04,855 - cassandra.cluster - WARNING - Downgrading core protocol version from 65 to 5 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:0750e59f-441b-37bb-b0a7-e097c5d725f7. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:16:06,285 - cassandra.cluster - WARNING - Downgrading core protocol version from 5 to 4 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:0750e59f-441b-37bb-b0a7-e097c5d725f7. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:16:09,491 - cassandra.policies - INFO - Using datacenter 'us-east-2' for DCAwareRoundRobinPolicy (via host '2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:0750e59f-441b-37bb-b0a7-e097c5d725f7'); if incorrect, please specify a local_dc to the constructor, or limit contact points to local cluster nodes
+2025-07-19 04:16:13,036 - src.vector_store - INFO - Available keyspaces: ['system_auth', 'system_schema', 'datastax_sla', 'default_keyspace', 'system', 'system_traces', 'data_endpoint_auth', 'insurance_claims']
+2025-07-19 04:16:14,773 - src.vector_store - INFO - Tables created successfully
+2025-07-19 04:16:14,773 - src.vector_store - INFO - Connected to Astra DB successfully using keyspace: default_keyspace
+2025-07-19 04:16:16,374 - src.vector_store - INFO - Ingested batch 1: 3 chunks
+2025-07-19 04:16:16,374 - src.vector_store - INFO - Successfully ingested 3 out of 3 chunks into Astra DB
+2025-07-19 04:19:19,844 - __main__ - ERROR - Failed to import ingest module: No module named 'docx2txt'
+2025-07-19 04:19:20,291 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:19:20,292 - __main__ - INFO - Application components initialized successfully
+2025-07-19 04:19:27,379 - __main__ - ERROR - Failed to import ingest module: No module named 'docx2txt'
+2025-07-19 04:19:27,803 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:19:27,804 - __main__ - INFO - Application components initialized successfully
+2025-07-19 04:19:27,817 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:19:27,817 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:19:33,867 - src.vector_store - INFO - Processed 3 chunks from CIS _Jeevan Labh_736.pdf
+2025-07-19 04:19:37,118 - cassandra.cluster - WARNING - Downgrading core protocol version from 66 to 65 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:b4f6d9ed-0f1d-3f7a-82f1-a4a7ea4f84d4. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:19:38,615 - cassandra.cluster - WARNING - Downgrading core protocol version from 65 to 5 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:b4f6d9ed-0f1d-3f7a-82f1-a4a7ea4f84d4. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:19:40,218 - cassandra.cluster - WARNING - Downgrading core protocol version from 5 to 4 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:b4f6d9ed-0f1d-3f7a-82f1-a4a7ea4f84d4. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:19:43,183 - cassandra.policies - INFO - Using datacenter 'us-east-2' for DCAwareRoundRobinPolicy (via host '2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:b4f6d9ed-0f1d-3f7a-82f1-a4a7ea4f84d4'); if incorrect, please specify a local_dc to the constructor, or limit contact points to local cluster nodes
+2025-07-19 04:19:52,702 - src.vector_store - INFO - Available keyspaces: ['system_auth', 'system_schema', 'datastax_sla', 'default_keyspace', 'system', 'system_traces', 'data_endpoint_auth', 'insurance_claims']
+2025-07-19 04:19:54,304 - src.vector_store - INFO - Tables created successfully
+2025-07-19 04:19:54,306 - src.vector_store - INFO - Connected to Astra DB successfully using keyspace: default_keyspace
+2025-07-19 04:19:56,072 - src.vector_store - INFO - Ingested batch 1: 3 chunks
+2025-07-19 04:19:56,073 - src.vector_store - INFO - Successfully ingested 3 out of 3 chunks into Astra DB
+2025-07-19 04:20:30,282 - __main__ - ERROR - Failed to import ingest module: No module named 'docx2txt'
+2025-07-19 04:20:30,380 - __main__ - ERROR - Failed to import ingest module: No module named 'docx2txt'
+2025-07-19 04:20:30,861 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:20:31,000 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:20:31,000 - __main__ - INFO - Application components initialized successfully
+2025-07-19 04:20:31,012 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:20:31,012 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:20:37,216 - src.vector_store - INFO - Processed 3 chunks from CIS _Jeevan Labh_736.pdf
+2025-07-19 04:20:40,593 - cassandra.cluster - WARNING - Downgrading core protocol version from 66 to 65 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:00958fd0-af98-391f-9f51-7e3fe763da5c. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:20:42,069 - cassandra.cluster - WARNING - Downgrading core protocol version from 65 to 5 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:00958fd0-af98-391f-9f51-7e3fe763da5c. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:20:43,529 - cassandra.cluster - WARNING - Downgrading core protocol version from 5 to 4 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:00958fd0-af98-391f-9f51-7e3fe763da5c. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:20:46,937 - cassandra.policies - INFO - Using datacenter 'us-east-2' for DCAwareRoundRobinPolicy (via host '2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:00958fd0-af98-391f-9f51-7e3fe763da5c'); if incorrect, please specify a local_dc to the constructor, or limit contact points to local cluster nodes
+2025-07-19 04:20:56,057 - src.vector_store - INFO - Available keyspaces: ['system_auth', 'system_schema', 'datastax_sla', 'default_keyspace', 'system', 'system_traces', 'data_endpoint_auth', 'insurance_claims']
+2025-07-19 04:20:57,820 - src.vector_store - INFO - Tables created successfully
+2025-07-19 04:20:57,821 - src.vector_store - INFO - Connected to Astra DB successfully using keyspace: default_keyspace
+2025-07-19 04:20:59,436 - src.vector_store - INFO - Ingested batch 1: 3 chunks
+2025-07-19 04:20:59,436 - src.vector_store - INFO - Successfully ingested 3 out of 3 chunks into Astra DB
+2025-07-19 04:20:59,441 - insurance_claim_advisor - INFO - logging_config:69 - Parsing query: Benefit payable on Maturity...
+2025-07-19 04:20:59,441 - insurance_claim_advisor - INFO - Parsing query: Benefit payable on Maturity...
+2025-07-19 04:20:59,442 - insurance_claim_advisor - INFO - logging_config:69 - Parsed query with confidence: 0.00
+2025-07-19 04:20:59,442 - insurance_claim_advisor - INFO - Parsed query with confidence: 0.00
+2025-07-19 04:20:59,443 - src.llm_handler - ERROR - Quick explanation error: 'ParsedQuery' object has no attribute 'lower'
+2025-07-19 04:21:01,337 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-19 04:22:38,817 - __main__ - ERROR - Failed to import ingest module: No module named 'docx2txt'
+2025-07-19 04:22:38,899 - __main__ - ERROR - Failed to import ingest module: No module named 'docx2txt'
+2025-07-19 04:22:39,408 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:22:39,549 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:22:39,550 - __main__ - INFO - Application components initialized successfully
+2025-07-19 04:22:39,561 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:22:39,561 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:22:45,888 - src.vector_store - INFO - Processed 3 chunks from CIS _Jeevan Labh_736.pdf
+2025-07-19 04:22:48,759 - cassandra.cluster - WARNING - Downgrading core protocol version from 66 to 65 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:00694036-11ec-39fb-8238-d79afd9b0e46. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:22:50,255 - cassandra.cluster - WARNING - Downgrading core protocol version from 65 to 5 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:00694036-11ec-39fb-8238-d79afd9b0e46. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:22:51,728 - cassandra.cluster - WARNING - Downgrading core protocol version from 5 to 4 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:00694036-11ec-39fb-8238-d79afd9b0e46. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:22:54,934 - cassandra.policies - INFO - Using datacenter 'us-east-2' for DCAwareRoundRobinPolicy (via host '2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:00694036-11ec-39fb-8238-d79afd9b0e46'); if incorrect, please specify a local_dc to the constructor, or limit contact points to local cluster nodes
+2025-07-19 04:23:01,334 - src.vector_store - INFO - Available keyspaces: ['system_auth', 'system_schema', 'datastax_sla', 'default_keyspace', 'system', 'system_traces', 'data_endpoint_auth', 'insurance_claims']
+2025-07-19 04:23:02,941 - src.vector_store - INFO - Tables created successfully
+2025-07-19 04:23:02,941 - src.vector_store - INFO - Connected to Astra DB successfully using keyspace: default_keyspace
+2025-07-19 04:23:04,537 - src.vector_store - INFO - Ingested batch 1: 3 chunks
+2025-07-19 04:23:04,537 - src.vector_store - INFO - Successfully ingested 3 out of 3 chunks into Astra DB
+2025-07-19 04:23:04,539 - insurance_claim_advisor - INFO - logging_config:69 - Parsing query: Benefit suicide...
+2025-07-19 04:23:04,539 - insurance_claim_advisor - INFO - Parsing query: Benefit suicide...
+2025-07-19 04:23:04,540 - insurance_claim_advisor - INFO - logging_config:69 - Parsed query with confidence: 0.00
+2025-07-19 04:23:04,540 - insurance_claim_advisor - INFO - Parsed query with confidence: 0.00
+2025-07-19 04:23:04,541 - src.llm_handler - ERROR - Quick explanation error: 'ParsedQuery' object has no attribute 'lower'
+2025-07-19 04:23:04,924 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 503 Service Unavailable"
+2025-07-19 04:23:04,924 - src.llm_handler - ERROR - Groq API call failed: Error code: 503 - {'error': {'message': 'Service unavailable. Visit https://groqstatus.com/ to see if there is an active incident.', 'type': 'internal_server_error'}}
+2025-07-19 04:23:04,924 - src.llm_handler - ERROR - Detailed analysis error: Error code: 503 - {'error': {'message': 'Service unavailable. Visit https://groqstatus.com/ to see if there is an active incident.', 'type': 'internal_server_error'}}
+2025-07-19 04:23:54,621 - __main__ - ERROR - Failed to import ingest module: No module named 'docx2txt'
+2025-07-19 04:23:55,039 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:23:55,040 - __main__ - INFO - Application components initialized successfully
+2025-07-19 04:23:55,053 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:23:55,053 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:24:01,620 - src.vector_store - INFO - Processed 3 chunks from CIS _Jeevan Labh_736.pdf
+2025-07-19 04:24:04,064 - cassandra.cluster - WARNING - Downgrading core protocol version from 66 to 65 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:9e3a5bee-3d95-3bf7-90f5-09bd2177324b. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:24:05,656 - cassandra.cluster - WARNING - Downgrading core protocol version from 65 to 5 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:9e3a5bee-3d95-3bf7-90f5-09bd2177324b. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:24:07,097 - cassandra.cluster - WARNING - Downgrading core protocol version from 5 to 4 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:9e3a5bee-3d95-3bf7-90f5-09bd2177324b. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:24:10,297 - cassandra.policies - INFO - Using datacenter 'us-east-2' for DCAwareRoundRobinPolicy (via host '2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:9e3a5bee-3d95-3bf7-90f5-09bd2177324b'); if incorrect, please specify a local_dc to the constructor, or limit contact points to local cluster nodes
+2025-07-19 04:24:13,713 - src.vector_store - INFO - Available keyspaces: ['system_auth', 'system_schema', 'datastax_sla', 'default_keyspace', 'system', 'system_traces', 'data_endpoint_auth', 'insurance_claims']
+2025-07-19 04:24:15,247 - src.vector_store - INFO - Tables created successfully
+2025-07-19 04:24:15,249 - src.vector_store - INFO - Connected to Astra DB successfully using keyspace: default_keyspace
+2025-07-19 04:24:16,803 - src.vector_store - INFO - Ingested batch 1: 3 chunks
+2025-07-19 04:24:16,804 - src.vector_store - INFO - Successfully ingested 3 out of 3 chunks into Astra DB
+2025-07-19 04:24:41,820 - __main__ - ERROR - Failed to import ingest module: No module named 'docx2txt'
+2025-07-19 04:24:41,899 - __main__ - ERROR - Failed to import ingest module: No module named 'docx2txt'
+2025-07-19 04:24:42,386 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:24:42,523 - src.llm_handler - INFO - Enhanced LLM models initialized successfully
+2025-07-19 04:24:42,525 - __main__ - INFO - Application components initialized successfully
+2025-07-19 04:24:42,539 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-07-19 04:24:42,540 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-19 04:24:48,240 - src.vector_store - INFO - Processed 3 chunks from CIS _Jeevan Labh_736.pdf
+2025-07-19 04:24:51,904 - cassandra.cluster - WARNING - Downgrading core protocol version from 66 to 65 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:b4f6d9ed-0f1d-3f7a-82f1-a4a7ea4f84d4. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:24:53,495 - cassandra.cluster - WARNING - Downgrading core protocol version from 65 to 5 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:b4f6d9ed-0f1d-3f7a-82f1-a4a7ea4f84d4. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:24:54,984 - cassandra.cluster - WARNING - Downgrading core protocol version from 5 to 4 for 2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:b4f6d9ed-0f1d-3f7a-82f1-a4a7ea4f84d4. To avoid this, it is best practice to explicitly set Cluster(protocol_version) to the version supported by your cluster. http://datastax.github.io/python-driver/api/cassandra/cluster.html#cassandra.cluster.Cluster.protocol_version
+2025-07-19 04:24:58,463 - cassandra.policies - INFO - Using datacenter 'us-east-2' for DCAwareRoundRobinPolicy (via host '2f939d98-fa05-4644-9a23-64a6147de61b-us-east-2.db.astra.datastax.com:29042:b4f6d9ed-0f1d-3f7a-82f1-a4a7ea4f84d4'); if incorrect, please specify a local_dc to the constructor, or limit contact points to local cluster nodes
+2025-07-19 04:25:01,661 - src.vector_store - INFO - Available keyspaces: ['system_auth', 'system_schema', 'datastax_sla', 'default_keyspace', 'system', 'system_traces', 'data_endpoint_auth', 'insurance_claims']
+2025-07-19 04:25:03,264 - src.vector_store - INFO - Tables created successfully
+2025-07-19 04:25:03,264 - src.vector_store - INFO - Connected to Astra DB successfully using keyspace: default_keyspace
+2025-07-19 04:25:05,158 - src.vector_store - INFO - Ingested batch 1: 3 chunks
+2025-07-19 04:25:05,159 - src.vector_store - INFO - Successfully ingested 3 out of 3 chunks into Astra DB
+2025-07-19 04:25:05,162 - insurance_claim_advisor - INFO - logging_config:69 - Parsing query: Benefit of suicide intentionally...
+2025-07-19 04:25:05,162 - insurance_claim_advisor - INFO - Parsing query: Benefit of suicide intentionally...
+2025-07-19 04:25:05,163 - insurance_claim_advisor - INFO - logging_config:69 - Parsed query with confidence: 0.00
+2025-07-19 04:25:05,163 - insurance_claim_advisor - INFO - Parsed query with confidence: 0.00
+2025-07-19 04:25:05,163 - src.llm_handler - ERROR - Quick explanation error: 'ParsedQuery' object has no attribute 'lower'
+2025-07-19 04:25:07,117 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"

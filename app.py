@@ -52,8 +52,12 @@ except ImportError as e:
     modules_loaded['parse_query'] = False
 
 
-# Vector store is not imported because no vector_store instance is defined in src/vector_store.py
-modules_loaded['vector_store'] = False
+try:
+    from src.vector_store import DocumentProcessor, AstraDBIngester
+    modules_loaded['vector_store'] = True
+except ImportError as e:
+    logger.error(f"Failed to import vector_store module: {e}")
+    modules_loaded['vector_store'] = False
 
 try:
     from src.llm_handler import LLMHandler
@@ -99,11 +103,7 @@ except ImportError as e:
 
 
 # VectorStoreManager is not defined in src/vector_store.py
-modules_loaded['vector_store'] = False
 
-
-# GroqLLMHandler is not defined in src/llm_handler.py
-modules_loaded['llm_handler'] = False
 
 try:
     from src.hybrid_search import HybridSearchEngine
@@ -227,38 +227,33 @@ class SmartInsuranceClaimAdvisor:
         try:
             # Initialize settings first
             if modules_loaded.get('settings', False):
-                self.settings = Settings()
+                from config.settings import settings
+                self.settings = settings
+                # Validate config, set demo_mode only if config fails
                 try:
-                    self.settings.validate_config()
-                except ValueError as e:
+                    self.settings.validate_configuration()
+                    st.session_state.demo_mode = False
+                except Exception as e:
                     st.warning(f"Configuration warning: {e}")
                     st.info("Running in demo mode with mock data.")
                     st.session_state.demo_mode = True
             else:
                 st.session_state.demo_mode = True
-            
-            # Initialize other components if available
 
-            # VectorStoreManager is not defined in your codebase, so skip initialization
-            
+            # Initialize other components if available
             if modules_loaded.get('parse_query', False):
                 self.query_parser = QueryParser()
-            
             if modules_loaded.get('conversation', False):
                 self.conversation_manager = ConversationManager()
-            
             if modules_loaded.get('llm_handler', False):
                 self.llm_handler = LLMHandler()
-            
 
-            # DocumentIngestionPipeline is not defined in your codebase, so skip initialization
-            
             # Initialize hybrid search (will be set after vector store is ready)
             self.hybrid_search = None
-            
+
             st.session_state.initialized = True
             logger.info("Application components initialized successfully")
-            
+
         except Exception as e:
             logger.error(f"Error initializing components: {str(e)}")
             st.error(f"Failed to initialize application: {str(e)}")
@@ -577,16 +572,97 @@ class SmartInsuranceClaimAdvisor:
             
             st.info(f"📈 Current approval rate: {approval_rate:.1f}%")
     
-    # Placeholder methods for full functionality
     def render_document_upload(self):
-        """Render document upload section"""
+        """Render document upload section with real processing and ingestion"""
         st.subheader("📁 Document Ingestion")
-        st.info("Document upload functionality requires full module setup.")
+        uploaded_files = st.file_uploader(
+            "Upload one or more documents (PDF, DOCX, PPTX, CSV, TXT, PNG, JPG, JPEG)",
+            type=self.settings.supported_file_types,
+            accept_multiple_files=True
+        )
+        if uploaded_files:
+            st.info(f"{len(uploaded_files)} file(s) uploaded.")
+            for file in uploaded_files:
+                st.write(f"**Filename:** {file.name}")
+                save_path = os.path.join("data", "uploads", file.name)
+                os.makedirs(os.path.dirname(save_path), exist_ok=True)
+                with open(save_path, "wb") as f:
+                    f.write(file.getbuffer())
+                st.success(f"Saved to {save_path}")
+                # Real document processing and ingestion
+                try:
+                    # Use DocumentProcessor and DocumentChunk from vector_store for consistency
+                    from src.vector_store import DocumentProcessor as VSProcessor, DocumentChunk
+                    processor = VSProcessor()
+                    chunks = processor.process_document(save_path)
+                    st.write(f"Extracted {len(chunks)} chunks.")
+                    token = os.getenv("ASTRA_DB_TOKEN", getattr(self.settings, "astra_db_token", None))
+                    database_id = os.getenv("ASTRA_DB_DATABASE_ID", getattr(self.settings, "astra_db_database_id", None))
+                    # Always use the actual downloaded filename for the secure bundle
+                    secure_bundle = "secure-connect-bajaj-hackathon.zip"
+                    if not token or not database_id:
+                        st.error("Astra DB credentials missing. Please set ASTRA_DB_TOKEN and ASTRA_DB_DATABASE_ID in your environment or settings.")
+                        st.session_state.ingestion_status = "Error"
+                        continue
+                    if not os.path.exists(secure_bundle):
+                        st.error(f"Secure Connect Bundle '{secure_bundle}' is missing. Please download it from your Astra DB dashboard and place it in your project directory.")
+                        st.info("Go to your Astra DB dashboard > Select your database > Connect > Download Secure Connect Bundle.")
+                        st.session_state.ingestion_status = "Error"
+                        continue
+                    ingester = AstraDBIngester(token, database_id)
+                    # Ensure chunks are of type List[DocumentChunk]
+                    if chunks and isinstance(chunks[0], DocumentChunk):
+                        ingester.ingest_chunks(chunks)
+                        st.success(f"Document processed and ingested successfully.")
+                        st.session_state.documents_ingested = True
+                        st.session_state.ingestion_status = "Completed"
+                        st.session_state.total_documents += 1
+                        st.session_state.total_chunks += len(chunks)
+                    else:
+                        st.error("Document chunks are not of the expected type.")
+                        st.session_state.ingestion_status = "Error"
+                except Exception as e:
+                    st.error(f"Error processing document: {e}")
+                    st.session_state.ingestion_status = "Error"
     
     def render_chat_interface(self):
-        """Render the chat interface"""
+        """Render the chat interface with real query processing"""
         st.subheader("💬 Insurance Claim Chat")
-        st.info("Chat interface requires full module setup.")
+        if not st.session_state.documents_ingested:
+            st.warning("Please upload and ingest documents before starting a chat.")
+            return
+        user_query = st.text_input("Enter your insurance claim query:", "")
+        if st.button("Submit Query") and user_query:
+            try:
+                # Use available methods in QueryParser and LLMHandler
+                # If QueryParser has a method like 'parse_query', use it; else pass raw query
+                if hasattr(self.query_parser, 'parse_query'):
+                    parsed_query = self.query_parser.parse_query(user_query)
+                else:
+                    parsed_query = user_query
+                # Try common LLMHandler methods for response
+                if hasattr(self.llm_handler, 'get_response'):
+                    response = self.llm_handler.get_response(parsed_query)
+                elif hasattr(self.llm_handler, 'process_query'):
+                    response = self.llm_handler.process_query(parsed_query)
+                elif hasattr(self.llm_handler, 'predict'):
+                    response = self.llm_handler.predict(parsed_query)
+                else:
+                    response = {"decision": "Unknown", "amount": "N/A", "justification": []}
+                st.session_state.conversation_history.append({
+                    'query': user_query,
+                    'response': response,
+                    'timestamp': datetime.now().isoformat()
+                })
+                self.render_chat_message(st.session_state.conversation_history[-1], len(st.session_state.conversation_history)-1)
+                st.success("Query processed!")
+            except Exception as e:
+                st.error(f"Error processing query: {e}")
+        # Show conversation history
+        if st.session_state.conversation_history:
+            st.subheader("💬 Conversation History")
+            for i, exchange in enumerate(st.session_state.conversation_history):
+                self.render_chat_message(exchange, i)
     
     def render_help_section(self):
         """Render help and documentation"""

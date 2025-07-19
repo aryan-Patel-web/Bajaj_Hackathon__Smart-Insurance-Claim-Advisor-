@@ -1,305 +1,471 @@
-import os
-import json
-import logging
-from typing import Dict, List, Any, Optional
-from groq import Groq
-from pydantic import BaseModel, Field
-import re
+"""
+Enhanced LLM Handler with Multi-Model Support
+Supports quick responses and detailed analysis
+"""
 
+import os
+import time
+import asyncio
+import logging
+from typing import Dict, Any, List, Optional, Tuple
+from dataclasses import dataclass
+from enum import Enum
+import json
+import re
+from datetime import datetime
+
+# Configure logging
 logger = logging.getLogger(__name__)
 
-class ClauseJustification(BaseModel):
-    """Model for clause justification"""
-    clause_id: str = Field(description="Source file and chunk ID")
-    text: str = Field(description="Relevant clause text")
+class ResponseType(Enum):
+    """Types of responses the LLM can generate"""
+    QUICK_EXPLANATION = "quick_explanation"
+    DETAILED_ANALYSIS = "detailed_analysis"
+    CLAIM_DECISION = "claim_decision"
+    POLICY_QUERY = "policy_query"
 
-class ClaimDecision(BaseModel):
-    """Model for claim decision response"""
-    decision: str = Field(description="Approved or Rejected")
-    amount: str = Field(description="Amount in ₹ format")
-    justification: List[ClauseJustification] = Field(description="List of supporting clauses")
+@dataclass
+class LLMResponse:
+    """Structured LLM response"""
+    content: str
+    response_type: ResponseType
+    confidence: float
+    processing_time: float
+    metadata: Dict[str, Any]
+    structured_data: Optional[Dict[str, Any]] = None
 
-class LLMHandler:
-    """Handles interactions with Groq LLM for insurance claim processing"""
+class EnhancedLLMHandler:
+    """Enhanced LLM Handler with multi-model support"""
     
-    def __init__(self):
-        """Initialize the LLM handler"""
-        self.client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-        self.model = "gemma2-9b-it"
+    def __init__(self, config: Optional[Dict] = None):
+        """Initialize the enhanced LLM handler"""
+        self.config = config or {}
+        self.primary_model = self.config.get('primary_model', 'groq')
+        self.quick_model = self.config.get('quick_model', 'groq-quick')
+        self.setup_models()
         
-    def generate_response(
-        self, 
-        query: str,
-        parsed_query: Dict[str, Any],
-        search_results: List[Dict[str, Any]],
-        context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
-        """
-        Generate a structured response for insurance claim query
-        
-        Args:
-            query: Original user query
-            parsed_query: Structured query fields
-            search_results: Retrieved policy clauses
-            context: Conversation context
-            
-        Returns:
-            Dict containing natural response and structured JSON
-        """
-        logger.info(f"Generating response for query: {query}")
-        
+    def setup_models(self):
+        """Setup different models for different purposes"""
         try:
-            # Prepare the prompt
-            prompt = self._create_prompt(query, parsed_query, search_results, context)
+            # Primary model for detailed analysis
+            self.primary_llm = self._initialize_groq_model()
             
-            # Call Groq API
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {
-                        "role": "system",
-                        "content": self._get_system_prompt()
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ],
-                temperature=0.1,
-                max_tokens=2048,
-                top_p=0.9
-            )
+            # Quick model for immediate responses
+            self.quick_llm = self._initialize_groq_model(model_name="llama3-8b-8192")
             
-            # Extract response content
-            # response_content = response.choices[0].message.content
-            response_content = response.choices[0].message.content
-            logger.info(f"LLM response: {response_content}")
-
-                        # Ensure response_content is a string
-            if response_content is None:
-                response_content = ""
-            
-            # Parse the structured response
-            structured_response = self._parse_structured_response(response_content)
-            
-            # Generate natural language response
-            natural_response = self._generate_natural_response(structured_response)
-            
-            return {
-                "natural_response": natural_response,
-                "structured_response": structured_response,
-                "raw_response": response_content
-            }
+            logger.info("Enhanced LLM models initialized successfully")
             
         except Exception as e:
-            logger.error(f"Error generating LLM response: {str(e)}")
-            return {
-                "natural_response": f"I apologize, but I encountered an error processing your claim: {str(e)}",
-                "structured_response": {
-                    "decision": "Error",
-                    "amount": "N/A",
-                    "justification": []
-                },
-                "raw_response": ""
-            }
+            logger.error(f"Failed to initialize LLM models: {e}")
+            self.primary_llm = None
+            self.quick_llm = None
     
-    def _get_system_prompt(self) -> str:
-        """Get the system prompt for the LLM"""
-        return """You are an expert insurance claim advisor AI assistant. Your task is to analyze insurance claims based on policy documents and provide structured decisions.
-
-CRITICAL INSTRUCTIONS:
-1. Analyze the provided policy clauses to determine claim eligibility
-2. Consider the claimant's details (age, procedure, location, policy duration)
-3. Provide a decision (Approved/Rejected) with amount and justification
-4. ALWAYS return your response in the exact JSON format specified
-5. Be thorough in your analysis and cite specific clauses
-6. Use Indian Rupee (₹) format for amounts
-7. Ensure decisions are based on the provided policy clauses
-
-You must be accurate, fair, and transparent in your decision-making process."""
-
-    def _create_prompt(
-        self, 
-        query: str, 
-        parsed_query: Dict[str, Any], 
-        search_results: List[Dict[str, Any]], 
-        context: Optional[Dict[str, Any]] = None
-    ) -> str:
-        """Create a detailed prompt for the LLM"""
+    def _initialize_groq_model(self, model_name: str = "llama3-70b-8192"):
+        """Initialize Groq model"""
+        try:
+            from groq import Groq
+            
+            api_key = os.getenv("GROQ_API_KEY")
+            if not api_key:
+                raise ValueError("GROQ_API_KEY not found in environment variables")
+            
+            client = Groq(api_key=api_key)
+            return client
+            
+        except ImportError:
+            logger.error("Groq library not installed. Install with: pip install groq")
+            return None
+        except Exception as e:
+            logger.error(f"Failed to initialize Groq model: {e}")
+            return None
+    
+    def get_quick_explanation(self, query: str) -> LLMResponse:
+        """Get quick explanation for immediate user feedback"""
+        start_time = time.time()
         
-        # Format search results
-        clauses_text = ""
-        for i, result in enumerate(search_results, 1):
-            clauses_text += f"\nClause {i}:\n"
-            clauses_text += f"Source: {result.get('source', 'Unknown')}\n"
-            clauses_text += f"Chunk ID: {result.get('chunk_id', 'Unknown')}\n"
-            clauses_text += f"Content: {result.get('content', '')}\n"
-            clauses_text += f"Relevance Score: {result.get('score', 0)}\n"
-            clauses_text += "-" * 50
+        try:
+            # Quick response patterns
+            quick_patterns = {
+                'surgery': "🏥 I'm analyzing your surgery claim. Checking policy coverage, age eligibility, and waiting periods...",
+                'claim': "📋 Processing your claim request. Reviewing policy terms and calculating eligible amounts...",
+                'dental': "🦷 Checking your dental coverage. Reviewing annual limits and treatment eligibility...",
+                'maternity': "👶 Analyzing maternity benefits. Checking waiting periods and coverage terms...",
+                'accident': "🚑 Processing accident claim. Reviewing emergency coverage and policy terms...",
+                'medication': "💊 Checking medication coverage. Reviewing prescription benefits and limits...",
+                'therapy': "🧘 Analyzing therapy coverage. Checking session limits and eligibility criteria...",
+                'diagnostic': "🔬 Reviewing diagnostic test coverage. Checking policy limits and pre-authorization requirements...",
+                'checkup': "👨‍⚕️ Analyzing health checkup coverage. Reviewing annual limits and preventive care benefits...",
+                'emergency': "🚨 Processing emergency claim. Reviewing immediate care coverage and policy terms...",
+                'hospitalization': "🏥 Checking hospitalization benefits. Reviewing room rent limits and coverage duration...",
+                'outpatient': "🏥 Analyzing outpatient coverage. Checking consultation limits and treatment eligibility..."
+            }
+            
+            # Generate contextual quick response
+            query_lower = query.lower()
+            explanation = "🔍 I'm analyzing your insurance query. Let me process the information and provide you with a detailed response..."
+            
+            for keyword, response in quick_patterns.items():
+                if keyword in query_lower:
+                    explanation = response
+                    break
+            
+            # Add query-specific context
+            if any(word in query_lower for word in ['age', 'old', 'years']):
+                explanation += " I'll also verify age-related eligibility criteria."
+            
+            if any(word in query_lower for word in ['policy', 'months', 'years']):
+                explanation += " I'll check your policy tenure and waiting periods."
+            
+            if any(word in query_lower for word in ['amount', 'cost', 'price', 'rupees']):
+                explanation += " I'll calculate the eligible claim amount."
+            
+            processing_time = time.time() - start_time
+            
+            return LLMResponse(
+                content=explanation,
+                response_type=ResponseType.QUICK_EXPLANATION,
+                confidence=0.9,
+                processing_time=processing_time,
+                metadata={
+                    'query_keywords': [word for word in quick_patterns.keys() if word in query_lower],
+                    'model_used': 'pattern_matching',
+                    'timestamp': datetime.now().isoformat()
+                }
+            )
+            
+        except Exception as e:
+            logger.error(f"Quick explanation error: {e}")
+            return LLMResponse(
+                content="🤖 Processing your query...",
+                response_type=ResponseType.QUICK_EXPLANATION,
+                confidence=0.5,
+                processing_time=time.time() - start_time,
+                metadata={'error': str(e)}
+            )
+    
+    def get_detailed_analysis(self, query: str, context: Optional[str] = None) -> LLMResponse:
+        """Get detailed analysis with structured claim decision"""
+        start_time = time.time()
         
-        # Format parsed query
-        query_details = f"""
-        Age: {parsed_query.get('age', 'Not specified')}
-        Procedure: {parsed_query.get('procedure', 'Not specified')}
-        Location: {parsed_query.get('location', 'Not specified')}
-        Policy Duration: {parsed_query.get('policy_duration', 'Not specified')}
-        """
+        try:
+            # Construct prompt for detailed analysis
+            prompt = self._construct_detailed_prompt(query, context)
+            
+            # Call primary LLM
+            if self.primary_llm:
+                response = self._call_groq_model(prompt, self.primary_llm)
+                structured_data = self._extract_structured_data(response)
+            else:
+                # Fallback to mock response
+                response, structured_data = self._generate_mock_response(query)
+            
+            processing_time = time.time() - start_time
+            
+            return LLMResponse(
+                content=response,
+                response_type=ResponseType.DETAILED_ANALYSIS,
+                confidence=0.85,
+                processing_time=processing_time,
+                metadata={
+                    'model_used': 'groq_primary',
+                    'has_context': context is not None,
+                    'timestamp': datetime.now().isoformat()
+                },
+                structured_data=structured_data
+            )
+            
+        except Exception as e:
+            logger.error(f"Detailed analysis error: {e}")
+            return self._generate_error_response(query, str(e), start_time)
+    
+    def _construct_detailed_prompt(self, query: str, context: Optional[str] = None) -> str:
+        """Construct detailed prompt for LLM"""
         
-        # Add context if available
-        context_text = ""
-        if context and context.get('previous_queries'):
-            context_text = f"\nPrevious conversation context:\n{context['previous_queries']}\n"
-        
-        prompt = f"""
-INSURANCE CLAIM ANALYSIS REQUEST
+        base_prompt = f"""
+You are an expert insurance claim advisor for Bajaj Allianz. Analyze the following query and provide a structured response.
 
-Original Query: "{query}"
+Query: {query}
 
-Parsed Query Details:{query_details}
+Context: {context or "No additional context provided"}
 
-{context_text}
-
-Retrieved Policy Clauses:
-{clauses_text}
-
-TASK:
-Analyze the above information and provide a structured decision on the insurance claim.
-
-RESPONSE FORMAT:
-You must respond with a JSON object in the following exact format:
-
+Please provide a JSON response with the following structure:
 {{
-    "decision": "Approved" or "Rejected",
-    "amount": "₹[amount]" or "₹0" if rejected,
+    "decision": "Approved/Rejected/Under Review",
+    "amount": "Claim amount in INR (e.g., ₹50,000)",
+    "explanation": "Brief explanation of the decision in 2-3 sentences",
     "justification": [
         {{
-            "clause_id": "source_file|chunk_id",
-            "text": "relevant clause excerpt that supports the decision"
+            "clause_id": "Policy clause reference",
+            "text": "Detailed justification text"
         }}
-    ]
+    ],
+    "confidence": 0.85,
+    "recommendations": [
+        "Any additional recommendations"
+    ],
+    "next_steps": [
+        "Required actions or documents"
+    ],
+    "coverage_details": {{
+        "policy_type": "Health/Motor/Life",
+        "coverage_limit": "Annual limit",
+        "waiting_period": "Applicable waiting period",
+        "exclusions": ["List of relevant exclusions"]
+    }}
 }}
 
-ANALYSIS GUIDELINES:
-1. Carefully examine each policy clause for relevance to the claim
-2. Consider the claimant's age, procedure type, location, and policy duration
-3. Check for any exclusions, waiting periods, or coverage limitations
-4. Provide clear justification with specific clause references
-5. If approved, calculate the appropriate amount based on policy terms
-6. If rejected, explain the specific reasons with clause citations
+Consider the following factors:
+1. Age and eligibility criteria
+2. Policy tenure and waiting periods
+3. Coverage limits and exclusions
+4. Pre-existing conditions
+5. Documentation requirements
+6. Claim history and patterns
+7. Treatment necessity and medical guidelines
+8. Geographic coverage (if applicable)
 
-Begin your analysis:
+Provide accurate, helpful, and professional advice. If information is insufficient, mention what additional details are needed.
 """
         
-        return prompt
+        return base_prompt
     
-    def _parse_structured_response(self, response_content: str) -> Dict[str, Any]:
-        """Parse the structured JSON response from LLM"""
+    def _call_groq_model(self, prompt: str, client, model_name: str = "llama3-70b-8192") -> str:
+        """Call Groq model with error handling"""
         try:
-            # Extract JSON from response
-            json_match = re.search(r'\{.*\}', response_content, re.DOTALL)
-            if json_match:
-                json_str = json_match.group(0)
-                parsed_response = json.loads(json_str)
-                
-                # Validate using Pydantic
-                decision = ClaimDecision(**parsed_response)
-                return decision.dict()
-            else:
-                logger.warning("No JSON found in response, creating default structure")
-                return self._create_default_response()
-                
-        except Exception as e:
-            logger.error(f"Error parsing structured response: {str(e)}")
-            return self._create_default_response()
-    
-    def _create_default_response(self) -> Dict[str, Any]:
-        """Create a default response structure"""
-        return {
-            "decision": "Error",
-            "amount": "₹0",
-            "justification": [{
-                "clause_id": "system|error",
-                "text": "Unable to process the claim due to system error"
-            }]
-        }
-    
-    def _generate_natural_response(self, structured_response: Dict[str, Any]) -> str:
-        """Generate a natural language response from structured data"""
-        decision = structured_response.get('decision', 'Unknown')
-        amount = structured_response.get('amount', '₹0')
-        justifications = structured_response.get('justification', [])
-        
-        if decision == 'Approved':
-            response = f"✅ **Good news!** Your insurance claim has been **approved** for {amount}.\n\n"
-            response += "**Justification:**\n"
-            for i, just in enumerate(justifications, 1):
-                response += f"{i}. {just.get('text', '')}\n"
-        elif decision == 'Rejected':
-            response = f"❌ **Unfortunately**, your insurance claim has been **rejected**.\n\n"
-            response += "**Reasons for rejection:**\n"
-            for i, just in enumerate(justifications, 1):
-                response += f"{i}. {just.get('text', '')}\n"
-        else:
-            response = f"⚠️ **Status**: {decision}\n\n"
-            response += "Please review the details below for more information.\n"
-        
-        return response
-    
-    def generate_follow_up_response(
-        self, 
-        query: str, 
-        previous_decision: Dict[str, Any], 
-        context: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        """Generate response for follow-up queries"""
-        logger.info(f"Generating follow-up response for: {query}")
-        
-        try:
-            prompt = f"""
-FOLLOW-UP QUERY ANALYSIS
-
-Previous Decision: {json.dumps(previous_decision, indent=2)}
-
-Current Query: "{query}"
-
-Context: {json.dumps(context, indent=2)}
-
-TASK:
-Provide a helpful response to the follow-up query based on the previous decision and context.
-If the query asks for clarification, provide detailed explanations.
-If the query requests additional information, search for relevant clauses.
-
-Respond in a natural, helpful manner while maintaining consistency with the previous decision.
-"""
-            
-            response = self.client.chat.completions.create(
-                model=self.model,
+            response = client.chat.completions.create(
+                model=model_name,
                 messages=[
-                    {
-                        "role": "system",
-                        "content": "You are a helpful insurance advisor providing follow-up information based on previous claim decisions."
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
+                    {"role": "system", "content": "You are an expert insurance claim advisor specializing in Indian insurance policies. Provide accurate, helpful responses based on standard insurance practices."},
+                    {"role": "user", "content": prompt}
                 ],
-                temperature=0.3,
-                max_tokens=1024
+                temperature=0.7,
+                max_tokens=1500
             )
             
-            natural_response = response.choices[0].message.content
-            
-            return {
-                "natural_response": natural_response,
-                "structured_response": previous_decision,  # Keep previous decision
-                "raw_response": natural_response
-            }
+            return response.choices[0].message.content
             
         except Exception as e:
-            logger.error(f"Error generating follow-up response: {str(e)}")
-            return {
-                "natural_response": f"I apologize, but I couldn't process your follow-up query: {str(e)}",
-                "structured_response": {},
-                "raw_response": ""
+            logger.error(f"Groq API call failed: {e}")
+            raise
+    
+    def _extract_structured_data(self, response: str) -> Dict[str, Any]:
+        """Extract structured data from LLM response"""
+        try:
+            # Try to extract JSON from response
+            json_match = re.search(r'\{.*\}', response, re.DOTALL)
+            if json_match:
+                json_str = json_match.group(0)
+                return json.loads(json_str)
+            
+            # If no JSON found, parse manually
+            return self._parse_response_manually(response)
+            
+        except Exception as e:
+            logger.error(f"Failed to extract structured data: {e}")
+            return self._generate_fallback_structure(response)
+    
+    def _parse_response_manually(self, response: str) -> Dict[str, Any]:
+        """Parse response manually if JSON extraction fails"""
+        
+        # Extract decision
+        decision = "Under Review"
+        if "approved" in response.lower():
+            decision = "Approved"
+        elif "rejected" in response.lower() or "denied" in response.lower():
+            decision = "Rejected"
+        
+        # Extract amount
+        amount_match = re.search(r'₹[\d,]+|INR\s*[\d,]+|rupees?\s*[\d,]+', response, re.IGNORECASE)
+        amount = amount_match.group(0) if amount_match else "Amount to be determined"
+        
+        # Extract explanation (first paragraph)
+        explanation = response.split('\n')[0][:200] + "..." if len(response.split('\n')[0]) > 200 else response.split('\n')[0]
+        
+        return {
+            "decision": decision,
+            "amount": amount,
+            "explanation": explanation,
+            "justification": [
+                {
+                    "clause_id": "PARSED_001",
+                    "text": "Based on policy analysis and claim evaluation"
+                }
+            ],
+            "confidence": 0.75,
+            "recommendations": ["Please provide additional documentation if required"],
+            "next_steps": ["Review the decision", "Submit any missing documents"],
+            "coverage_details": {
+                "policy_type": "Health",
+                "coverage_limit": "As per policy terms",
+                "waiting_period": "Standard waiting periods apply",
+                "exclusions": []
             }
+        }
+    
+    def _generate_fallback_structure(self, response: str) -> Dict[str, Any]:
+        """Generate fallback structure when parsing fails"""
+        return {
+            "decision": "Under Review",
+            "amount": "₹0",
+            "explanation": "Unable to process the claim automatically. Manual review required.",
+            "justification": [
+                {
+                    "clause_id": "FALLBACK_001",
+                    "text": "System encountered an error during processing. Please contact customer service."
+                }
+            ],
+            "confidence": 0.3,
+            "recommendations": ["Contact customer service for manual review"],
+            "next_steps": ["Call customer service", "Submit claim manually"],
+            "coverage_details": {
+                "policy_type": "Unknown",
+                "coverage_limit": "Unknown",
+                "waiting_period": "Unknown",
+                "exclusions": []
+            }
+        }
+    
+    def _generate_mock_response(self, query: str) -> Tuple[str, Dict[str, Any]]:
+        """Generate mock response when LLM is unavailable"""
+        
+        # Analyze query for mock response
+        query_lower = query.lower()
+        
+        # Mock decision logic
+        if any(word in query_lower for word in ['emergency', 'accident', 'urgent']):
+            decision = "Approved"
+            amount = "₹75,000"
+            explanation = "Emergency claim approved based on policy terms."
+        elif any(word in query_lower for word in ['cosmetic', 'aesthetic', 'beauty']):
+            decision = "Rejected"
+            amount = "₹0"
+            explanation = "Cosmetic procedures are not covered under this policy."
+        else:
+            decision = "Approved"
+            amount = "₹50,000"
+            explanation = "Claim approved after policy verification."
+        
+        response_text = f"Mock Analysis: {explanation}"
+        
+        structured_data = {
+            "decision": decision,
+            "amount": amount,
+            "explanation": explanation,
+            "justification": [
+                {
+                    "clause_id": "MOCK_001",
+                    "text": "Mock response generated for demonstration purposes"
+                }
+            ],
+            "confidence": 0.6,
+            "recommendations": ["This is a mock response for demo purposes"],
+            "next_steps": ["Configure actual LLM for real processing"],
+            "coverage_details": {
+                "policy_type": "Health",
+                "coverage_limit": "₹5,00,000",
+                "waiting_period": "30 days",
+                "exclusions": ["Pre-existing conditions", "Cosmetic procedures"]
+            }
+        }
+        
+        return response_text, structured_data
+    
+    def _generate_error_response(self, query: str, error: str, start_time: float) -> LLMResponse:
+        """Generate error response"""
+        return LLMResponse(
+            content=f"❌ Error processing query: {error}",
+            response_type=ResponseType.DETAILED_ANALYSIS,
+            confidence=0.0,
+            processing_time=time.time() - start_time,
+            metadata={
+                'error': error,
+                'query': query,
+                'timestamp': datetime.now().isoformat()
+            },
+            structured_data={
+                "decision": "Error",
+                "amount": "₹0",
+                "explanation": f"System error: {error}",
+                "justification": [],
+                "confidence": 0.0,
+                "recommendations": ["Please try again or contact support"],
+                "next_steps": ["Retry the query", "Contact technical support"]
+            }
+        )
+    
+    def process_claim_query(self, query: str, context: Optional[str] = None) -> Tuple[LLMResponse, LLMResponse]:
+        """Process claim query with both quick and detailed responses"""
+        
+        # Get quick explanation first
+        quick_response = self.get_quick_explanation(query)
+        
+        # Get detailed analysis
+        detailed_response = self.get_detailed_analysis(query, context)
+        
+        return quick_response, detailed_response
+    
+    def get_contextual_help(self, query: str) -> str:
+        """Get contextual help based on query"""
+        query_lower = query.lower()
+        
+        help_responses = {
+            'surgery': "For surgery claims, ensure you have: Pre-authorization, discharge summary, bills, and medical reports.",
+            'dental': "Dental claims require: Treatment plan, bills, X-rays (if applicable), and dentist's prescription.",
+            'maternity': "Maternity claims need: Discharge summary, delivery bills, baby's birth certificate, and pre-natal records.",
+            'accident': "Accident claims require: Police report (if applicable), medical reports, bills, and accident details.",
+            'medication': "Medicine claims need: Prescription, purchase bills, and medical reports supporting the treatment.",
+            'emergency': "Emergency claims require: Admission details, discharge summary, bills, and medical emergency proof."
+        }
+        
+        for keyword, help_text in help_responses.items():
+            if keyword in query_lower:
+                return help_text
+        
+        return "Ensure you have all relevant medical documents, bills, and policy details for faster processing."
+    
+    def validate_claim_data(self, claim_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Validate claim data structure"""
+        required_fields = ['decision', 'amount', 'explanation', 'justification', 'confidence']
+        
+        for field in required_fields:
+            if field not in claim_data:
+                claim_data[field] = self._get_default_value(field)
+        
+        # Ensure confidence is between 0 and 1
+        if isinstance(claim_data.get('confidence'), (int, float)):
+            claim_data['confidence'] = max(0, min(1, claim_data['confidence']))
+        
+        return claim_data
+    
+    def _get_default_value(self, field: str) -> Any:
+        """Get default value for missing fields"""
+        defaults = {
+            'decision': 'Under Review',
+            'amount': '₹0',
+            'explanation': 'Processing...',
+            'justification': [],
+            'confidence': 0.5,
+            'recommendations': [],
+            'next_steps': []
+        }
+        return defaults.get(field, '')
+
+# Legacy LLMHandler class for backward compatibility
+class LLMHandler:
+    """Legacy LLM Handler for backward compatibility"""
+    
+    def __init__(self, config: Optional[Dict] = None):
+        self.enhanced_handler = EnhancedLLMHandler(config)
+    
+    def get_response(self, query: str) -> Dict[str, Any]:
+        """Get response using enhanced handler"""
+        _, detailed_response = self.enhanced_handler.process_claim_query(query)
+        return detailed_response.structured_data or {}
+    
+    def process_query(self, query: str) -> Dict[str, Any]:
+        """Process query using enhanced handler"""
+        return self.get_response(query)
+    
+    def predict(self, query: str) -> Dict[str, Any]:
+        """Predict using enhanced handler"""
+        return self.get_response(query)
