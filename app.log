@@ -2132,3 +2132,232 @@ NameError: name 'Path' is not defined
 2025-07-20 18:58:46,563 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
 2025-07-20 18:58:46,564 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 18:58:46] "POST /chat HTTP/1.1" 200 -
 2025-07-20 18:58:46,568 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 18:58:53,314 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'Please provide your policy number so I can process your claim.'
+2025-07-20 18:58:53,315 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 18:58:53,317 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 18:58:53,445 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 18:58:54,435 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 18:58:55,284 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 18:58:55,285 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 18:58:55] "POST /chat HTTP/1.1" 200 -
+2025-07-20 18:58:55,370 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:00:59,153 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:00:59] "GET / HTTP/1.1" 200 -
+2025-07-20 19:01:01,473 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'Mr. Rajesh Sharma - Fractured Wrist from Bike Accident'
+2025-07-20 19:01:01,474 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:01:01,476 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:01:01,522 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:01:02,893 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:01:04,210 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:01:04,211 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:01:04] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:01:04,248 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:01:40,964 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'I have a planned wrist surgery at Fortis Hospital Noida on 19 July. I want to apply for cashless hospitalization.'
+2025-07-20 19:01:40,965 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:01:40,967 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:01:41,012 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:01:42,140 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:01:42,918 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:01:42,919 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:01:42] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:01:43,052 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:02:04,217 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'Policy Number: ICICI-1234-5678-9012'
+2025-07-20 19:02:04,217 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:02:04,219 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:02:04,274 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:02:05,300 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:02:06,470 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:02:06,471 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:02:06] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:02:06,475 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:02:36,547 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: '2 lakh'
+2025-07-20 19:02:36,548 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:02:36,550 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:02:36,599 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:02:37,926 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:02:39,033 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:02:39,034 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:02:39] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:02:39,075 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:03:41,435 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'Hospital Name: Fortis Hospital, Noida (ICICI Network Provider)  Doctor: Dr. Anjali Mehta'
+2025-07-20 19:03:41,436 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:03:41,438 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:03:41,483 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:03:42,650 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:03:43,957 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:03:43,958 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:03:43] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:03:43,960 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:03:56,992 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'Dr. Anjali Mehta'
+2025-07-20 19:03:56,993 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:03:56,994 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:03:57,031 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:03:58,244 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:03:59,273 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:03:59,273 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:03:59] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:03:59,540 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:04:07,570 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'yes'
+2025-07-20 19:04:07,571 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:04:07,572 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:04:07,615 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:04:08,632 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:04:09,761 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:04:09,763 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:04:09] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:04:09,809 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:05:41,234 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'orthopedic'
+2025-07-20 19:05:41,235 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:05:41,236 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:05:41,282 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:05:42,532 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:05:43,508 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:05:43,509 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:05:43] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:05:43,513 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:05:57,373 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'can i get claims'
+2025-07-20 19:05:57,374 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:05:57,375 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:05:57,416 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:05:58,712 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:05:59,944 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:05:59,945 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:05:59] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:05:59,948 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:08:22,580 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'i can get my claim amount from bank or i get cheque'
+2025-07-20 19:08:22,581 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:08:22,584 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:08:22,658 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:08:24,326 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:08:25,359 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:08:25,360 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:08:25] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:08:25,659 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:08:41,829 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'How would you like to receive your claim amount?'
+2025-07-20 19:08:41,835 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:08:41,858 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:08:41,969 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:08:43,237 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:08:44,138 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:08:44,139 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:08:44] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:08:44,400 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:09:02,738 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'can i get all claims through upi'
+2025-07-20 19:09:02,739 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:09:02,742 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:09:02,818 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:09:04,364 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:09:05,494 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:09:05,496 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:09:05] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:09:05,558 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:40:51,182 - INFO - root - logging_config.setup_logging:50 - Logging configured successfully.
+2025-07-20 19:40:53,493 - INFO - src.vector_store - vector_store.__init__:38 - Initializing VectorStoreManager with new packages...
+2025-07-20 19:41:15,665 - INFO - numexpr.utils - utils._init_num_threads:148 - Note: NumExpr detected 28 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+2025-07-20 19:41:15,665 - INFO - numexpr.utils - utils._init_num_threads:160 - NumExpr defaulting to 8 threads.
+2025-07-20 19:41:20,790 - INFO - sentence_transformers.SentenceTransformer - SentenceTransformer.__init__:211 - Use pytorch device_name: cpu
+2025-07-20 19:41:20,790 - INFO - sentence_transformers.SentenceTransformer - SentenceTransformer.__init__:219 - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-07-20 19:41:26,718 - INFO - langchain_astradb.vectorstores - vectorstores.__init__:858 - vector store default init, collection 'insurance_documents'
+2025-07-20 19:41:26,781 - INFO - root - astradb._normalize_data_api_environment:185 - Detecting API environment 'prod' from supplied endpoint
+2025-07-20 19:41:27,881 - INFO - astrapy.data.database - database.create_collection:786 - createCollection('insurance_documents')
+2025-07-20 19:41:31,201 - INFO - astrapy.data.database - database.create_collection:798 - finished createCollection('insurance_documents')
+2025-07-20 19:41:31,513 - INFO - src.vector_store - vector_store.__init__:54 - Astra DB vector store initialized successfully.
+2025-07-20 19:41:32,015 - INFO - werkzeug - _internal._log:97 - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://10.115.3.208:8000
+2025-07-20 19:41:32,015 - INFO - werkzeug - _internal._log:97 - [33mPress CTRL+C to quit[0m
+2025-07-20 19:41:48,218 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:41:48] "GET / HTTP/1.1" 200 -
+2025-07-20 19:42:34,773 - INFO - __main__ - app.ingest_documents_route:59 - Received 6 files for ingestion.
+2025-07-20 19:42:34,775 - INFO - src.ingest - ingest.process_and_embed_documents:43 - Loading 6 specific documents.
+2025-07-20 19:42:34,778 - INFO - utils.document_loader - document_loader.load_single_document:63 - Loading document: D:\B-Tech CSE IIIT\B-Tech CSE IIIT\MACHINE_LEARNING_PROJECT\Hackathon -PROJECT------------\Bajaj_Insurance Claim Advisor\data\documents\ICIHLIP22012V012223.pdf using PyPDFLoader
+2025-07-20 19:42:45,268 - INFO - utils.document_loader - document_loader.load_single_document:66 - Successfully loaded 31 parts from D:\B-Tech CSE IIIT\B-Tech CSE IIIT\MACHINE_LEARNING_PROJECT\Hackathon -PROJECT------------\Bajaj_Insurance Claim Advisor\data\documents\ICIHLIP22012V012223.pdf.
+2025-07-20 19:42:45,273 - INFO - utils.document_loader - document_loader.load_single_document:63 - Loading document: D:\B-Tech CSE IIIT\B-Tech CSE IIIT\MACHINE_LEARNING_PROJECT\Hackathon -PROJECT------------\Bajaj_Insurance Claim Advisor\data\documents\HDFHLIP23024V072223.pdf using PyPDFLoader
+2025-07-20 19:42:55,447 - INFO - utils.document_loader - document_loader.load_single_document:66 - Successfully loaded 39 parts from D:\B-Tech CSE IIIT\B-Tech CSE IIIT\MACHINE_LEARNING_PROJECT\Hackathon -PROJECT------------\Bajaj_Insurance Claim Advisor\data\documents\HDFHLIP23024V072223.pdf.
+2025-07-20 19:42:55,449 - INFO - utils.document_loader - document_loader.load_single_document:63 - Loading document: D:\B-Tech CSE IIIT\B-Tech CSE IIIT\MACHINE_LEARNING_PROJECT\Hackathon -PROJECT------------\Bajaj_Insurance Claim Advisor\data\documents\EDLHLGA23009V012223.pdf using PyPDFLoader
+2025-07-20 19:42:56,227 - INFO - utils.document_loader - document_loader.load_single_document:66 - Successfully loaded 2 parts from D:\B-Tech CSE IIIT\B-Tech CSE IIIT\MACHINE_LEARNING_PROJECT\Hackathon -PROJECT------------\Bajaj_Insurance Claim Advisor\data\documents\EDLHLGA23009V012223.pdf.
+2025-07-20 19:42:56,229 - INFO - utils.document_loader - document_loader.load_single_document:63 - Loading document: D:\B-Tech CSE IIIT\B-Tech CSE IIIT\MACHINE_LEARNING_PROJECT\Hackathon -PROJECT------------\Bajaj_Insurance Claim Advisor\data\documents\CHOTGDP23004V012223.pdf using PyPDFLoader
+2025-07-20 19:43:20,319 - INFO - utils.document_loader - document_loader.load_single_document:66 - Successfully loaded 101 parts from D:\B-Tech CSE IIIT\B-Tech CSE IIIT\MACHINE_LEARNING_PROJECT\Hackathon -PROJECT------------\Bajaj_Insurance Claim Advisor\data\documents\CHOTGDP23004V012223.pdf.
+2025-07-20 19:43:20,320 - INFO - utils.document_loader - document_loader.load_single_document:63 - Loading document: D:\B-Tech CSE IIIT\B-Tech CSE IIIT\MACHINE_LEARNING_PROJECT\Hackathon -PROJECT------------\Bajaj_Insurance Claim Advisor\data\documents\BAJHLIP23020V012223.pdf using PyPDFLoader
+2025-07-20 19:43:31,635 - INFO - utils.document_loader - document_loader.load_single_document:66 - Successfully loaded 49 parts from D:\B-Tech CSE IIIT\B-Tech CSE IIIT\MACHINE_LEARNING_PROJECT\Hackathon -PROJECT------------\Bajaj_Insurance Claim Advisor\data\documents\BAJHLIP23020V012223.pdf.
+2025-07-20 19:43:31,637 - INFO - utils.document_loader - document_loader.load_single_document:63 - Loading document: D:\B-Tech CSE IIIT\B-Tech CSE IIIT\MACHINE_LEARNING_PROJECT\Hackathon -PROJECT------------\Bajaj_Insurance Claim Advisor\data\documents\3khO4mBz0M.pdf using PyPDFLoader
+2025-07-20 19:43:31,888 - INFO - utils.document_loader - document_loader.load_single_document:66 - Successfully loaded 3 parts from D:\B-Tech CSE IIIT\B-Tech CSE IIIT\MACHINE_LEARNING_PROJECT\Hackathon -PROJECT------------\Bajaj_Insurance Claim Advisor\data\documents\3khO4mBz0M.pdf.
+2025-07-20 19:43:31,890 - INFO - src.ingest - ingest.process_and_embed_documents:53 - Successfully loaded 225 document parts.
+2025-07-20 19:43:31,891 - INFO - utils.chunking - chunking.chunk_documents:33 - Starting to chunk 225 document parts...
+2025-07-20 19:43:32,037 - INFO - utils.chunking - chunking.chunk_documents:47 - Chunking complete. Original parts: 225, Total chunks: 1079
+2025-07-20 19:43:32,037 - ERROR - src.ingest - ingest.process_and_embed_documents:72 - An error occurred during the ingestion pipeline: name 'Path' is not defined
+Traceback (most recent call last):
+  File "D:\B-Tech CSE IIIT\B-Tech CSE IIIT\MACHINE_LEARNING_PROJECT\Hackathon -PROJECT------------\Bajaj_Insurance Claim Advisor\src\ingest.py", line 56, in process_and_embed_documents
+    chunked_docs = chunk_documents(documents)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\B-Tech CSE IIIT\B-Tech CSE IIIT\MACHINE_LEARNING_PROJECT\Hackathon -PROJECT------------\Bajaj_Insurance Claim Advisor\utils\chunking.py", line 51, in chunk_documents
+    source_file = Path(chunk.metadata.get("source", "unknown_source")).name
+                  ^^^^
+NameError: name 'Path' is not defined
+2025-07-20 19:43:32,044 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:43:32] "POST /ingest HTTP/1.1" 200 -
+2025-07-20 19:44:27,087 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'i am aryan patel - fracture wrist from bike accident'
+2025-07-20 19:44:27,088 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:44:27,090 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:44:27,169 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:44:28,613 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:44:29,939 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:44:29,941 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:44:29] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:44:30,028 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:45:06,648 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'i am providing policy number - icici-1234-5678-9012'
+2025-07-20 19:45:06,649 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:45:06,651 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:45:06,702 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:45:08,077 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:45:08,913 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:45:08,914 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:45:08] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:45:09,020 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:45:30,155 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'date - 15 july and location near gb road'
+2025-07-20 19:45:30,157 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:45:30,159 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:45:30,234 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:45:31,491 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:45:32,529 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:45:32,531 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:45:32] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:45:32,608 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:45:47,518 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'it approx 4 pm evening'
+2025-07-20 19:45:47,519 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:45:47,520 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:45:47,606 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:45:48,826 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:45:49,742 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:45:49,744 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:45:49] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:45:49,778 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:47:18,554 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'i  have a planned wrist surgery at Fortis Hospital Noida on 19 July. I want to apply for cashless hospitali'
+2025-07-20 19:47:18,555 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:47:18,557 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:47:18,637 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:47:19,745 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:47:20,687 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:47:20,688 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:47:20] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:47:20,816 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:47:33,552 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'estimated cost around 2 lakh'
+2025-07-20 19:47:33,553 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:47:33,555 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:47:33,641 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:47:34,827 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:47:35,826 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:47:35,826 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:47:35] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:47:36,083 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:48:02,171 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'dr suman verma'
+2025-07-20 19:48:02,172 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:48:02,174 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:48:02,243 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:48:03,293 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:48:04,283 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:48:04,285 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:48:04] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:48:04,535 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:48:35,051 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'can i get claims direct on my bank'
+2025-07-20 19:48:35,052 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:48:35,054 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:48:35,181 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:48:36,267 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:48:37,398 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:48:37,400 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:48:37] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:48:37,723 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:49:10,018 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'i need upi'
+2025-07-20 19:49:10,019 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:49:10,021 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:49:10,121 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:49:11,359 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:49:12,450 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:49:12,454 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:49:12] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:49:12,511 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
+2025-07-20 19:49:31,893 - INFO - __main__ - app.chat_route:84 - Received chat query for SSE stream: 'aryan@9140782213.oksbi'
+2025-07-20 19:49:31,894 - INFO - __main__ - app.generate_stream:88 - Stream generation started.
+2025-07-20 19:49:31,895 - INFO - src.vector_store - vector_store.get_retriever:101 - Creating retriever with search_type='similarity' and search_kwargs={'k': 5}
+2025-07-20 19:49:32,006 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:142 - cursor fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:49:33,083 - INFO - astrapy.data.cursors.cursor - query_engine._fetch_page:147 - cursor finished fetching a page: (empty page state) from insurance_documents
+2025-07-20 19:49:33,892 - INFO - __main__ - app.generate_stream:92 - Received chunk 0 from LLM.
+2025-07-20 19:49:33,893 - INFO - werkzeug - _internal._log:97 - 127.0.0.1 - - [20/Jul/2025 19:49:33] "POST /chat HTTP/1.1" 200 -
+2025-07-20 19:49:34,008 - INFO - __main__ - app.generate_stream:96 - Stream generation finished successfully.
