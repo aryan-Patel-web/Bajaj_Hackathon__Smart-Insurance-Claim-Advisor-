@@ -1,64 +1,95 @@
-import re
-from dataclasses import dataclass
-from typing import List, Dict, Any
+# utils/chunking.py
+
+"""
+Provides functionality for splitting large documents into smaller, manageable chunks.
+This is a crucial step for embedding, as LLMs and vector stores have context limits.
+Using a RecursiveCharacterTextSplitter with overlap helps maintain semantic context
+between chunks.
+"""
+
+from typing import List
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from utils.logging_config import logger
+from langchain.docstore.document import Document
 from config.settings import settings
+from utils.logging_config import get_logger
 
-@dataclass
-class DocumentChunk:
-    chunk_id: str
-    content: str
-    metadata: Dict[str, Any]
-    source: str
-    chunk_index: int
-    char_count: int
+logger = get_logger(__name__)
 
-class DocumentChunker:
-    def __init__(self, chunk_size=None, chunk_overlap=None, separators=None):
-        self.chunk_size = chunk_size or settings.chunk_size
-        self.chunk_overlap = chunk_overlap or settings.chunk_overlap
-        self.separators = separators or ["\n\n", "\n", ". ", "? ", "! ", "; ", ", ", " ", ""]
-        self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=self.chunk_size,
-            chunk_overlap=self.chunk_overlap,
-            separators=self.separators,
-            length_function=len
-        )
-        logger.info(f"Initialized chunker with size {self.chunk_size} and overlap {self.chunk_overlap}")
+def chunk_documents(documents: List[Document]) -> List[Document]:
+    """
+    Splits a list of LangChain Document objects into smaller chunks.
 
-    def chunk_document(self, document: Dict[str, Any]) -> List[DocumentChunk]:
-        content = document.get("content", "")
-        if not content.strip():
-            logger.warning(f"Empty document: {document.get('filename')}")
-            return []
-        cleaned = self._preprocess_content(content)
-        chunks = self.text_splitter.split_text(cleaned)
-        res = []
-        for i, cnt in enumerate(chunks):
-            res.append(DocumentChunk(
-                chunk_id=f"{document['filename']}|{i}",
-                content=cnt,
-                metadata={
-                    **document.get("metadata", {}),
-                    "chunk_index": i,
-                    "total_chunks": len(chunks),
-                    "char_count": len(cnt),
-                    "source_filename": document["filename"],
-                    "source_file_type": document.get("file_type", "unknown")
-                },
-                source=document["filename"],
-                chunk_index=i,
-                char_count=len(cnt)
-            ))
-        logger.info(f"Chunked {document['filename']} into {len(res)} chunks")
-        return res
+    Args:
+        documents (List[Document]): The list of documents to be chunked.
 
-    def _preprocess_content(self, content: str) -> str:
-        content = re.sub(r'\s+', ' ', content)
-        content = re.sub(r'[^\w\s\.\,\;\:\!\?\-\(\)\[\]\{\}\"\'\/\\\@\#\$\%\^\&\*\+\=\|]', '', content)
-        content = content.replace('\r\n', '\n').replace('\r', '\n')
-        content = re.sub(r'\n\s*\n', '\n\n', content)
-        return content.strip()
+    Returns:
+        List[Document]: A new list of chunked Document objects. Each chunk
+                        retains the metadata of its source document.
+    """
+    if not documents:
+        logger.warning("chunk_documents called with an empty list of documents.")
+        return []
 
-document_chunker = DocumentChunker()
+    logger.info(f"Starting to chunk {len(documents)} document parts...")
+    
+    # Initialize the text splitter with parameters from the settings file.
+    # This splitter tries to split on common separators like newlines first.
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=settings.CHUNK_SIZE,
+        chunk_overlap=settings.CHUNK_OVERLAP,
+        length_function=len,
+        add_start_index=True, # Helps in identifying chunk position
+    )
+
+    # The `split_documents` method handles iterating through docs and splitting them.
+    chunked_documents = text_splitter.split_documents(documents)
+
+    logger.info(f"Chunking complete. Original parts: {len(documents)}, Total chunks: {len(chunked_documents)}")
+    
+    # Add a custom chunk_id to the metadata for precise referencing
+    for i, chunk in enumerate(chunked_documents):
+        source_file = Path(chunk.metadata.get("source", "unknown_source")).name
+        chunk.metadata["chunk_id"] = f"{source_file}|chunk_{i}"
+
+    return chunked_documents
+
+if __name__ == '__main__':
+    # Example Usage
+    print("--- Testing Document Chunking ---")
+    
+    # Create a dummy document for testing purposes
+    sample_content = "This is the first sentence. " * 100
+    sample_content += "This is the middle part of the document that should be split. " * 200
+    sample_content += "This is the final sentence. " * 100
+    
+    dummy_doc = Document(
+        page_content=sample_content,
+        metadata={"source": "/path/to/fake_document.pdf", "page": 1}
+    )
+    
+    print(f"Original document length: {len(dummy_doc.page_content)} characters.")
+    
+    # Chunk the dummy document
+    chunks = chunk_documents([dummy_doc])
+    
+    print(f"Document split into {len(chunks)} chunks.")
+    
+    if chunks:
+        print("\n--- Details of the first chunk ---")
+        print(f"Content length: {len(chunks[0].page_content)}")
+        print(f"Metadata: {chunks[0].metadata}")
+        print(f"Content snippet: '{chunks[0].page_content[:250]}...'")
+
+        if len(chunks) > 1:
+            print("\n--- Details of the second chunk ---")
+            print(f"Content length: {len(chunks[1].page_content)}")
+            print(f"Metadata: {chunks[1].metadata}")
+            
+            # Check for overlap
+            overlap_start = chunks[0].page_content[-settings.CHUNK_OVERLAP:]
+            second_chunk_start = chunks[1].page_content[:settings.CHUNK_OVERLAP]
+            print(f"Overlap check: The end of chunk 1 should match the start of chunk 2.")
+            # This is an approximation, as the splitter might not be exact
+            print(f"End of chunk 1 (last 50 chars): '...{overlap_start[-50:]}'")
+            print(f"Start of chunk 2 (first 50 chars): '{second_chunk_start[:50]}...'")
+

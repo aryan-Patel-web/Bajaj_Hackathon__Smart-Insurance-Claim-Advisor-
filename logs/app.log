@@ -223,3 +223,5 @@
 2025-07-19 04:25:05,163 - insurance_claim_advisor - INFO - Parsed query with confidence: 0.00
 2025-07-19 04:25:05,163 - src.llm_handler - ERROR - Quick explanation error: 'ParsedQuery' object has no attribute 'lower'
 2025-07-19 04:25:07,117 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-20 00:54:30,353 - insurance_claim_advisor - INFO - logging_config:69 - Parsing query: can i suicide intentionally then my family get insurance...
+2025-07-20 00:54:30,408 - insurance_claim_advisor - INFO - logging_config:69 - Parsed query with confidence: 0.00

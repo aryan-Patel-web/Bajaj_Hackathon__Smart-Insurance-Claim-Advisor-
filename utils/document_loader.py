@@ -1,171 +1,134 @@
+# utils/document_loader.py
+
+"""
+Handles loading and parsing of various document formats.
+This module abstracts the complexity of file handling and content extraction,
+providing a unified interface to the ingestion pipeline. It supports PDF, DOCX,
+PPTX, and common image formats (using OCR).
+"""
+
 import os
-import io
-import email
 from pathlib import Path
-import pandas as pd
-import pytesseract
-from PIL import Image
-from docx import Document
-from pptx import Presentation
-import PyPDF2
-from tika import parser
-from utils.logging_config import logger
-from config.settings import settings
-from typing import Dict, Any, Optional
+from typing import List, Dict, Any
+from langchain_community.document_loaders import (
+    PyPDFLoader,
+    Docx2txtLoader,
+    UnstructuredPowerPointLoader,
+    UnstructuredEmailLoader,
+    UnstructuredFileLoader,
+)
+from langchain.docstore.document import Document
+from utils.logging_config import get_logger
 
-class DocumentLoader:
-    def __init__(self):
-        self.supported = {
-            '.pdf': self._load_pdf,
-            '.docx': self._load_docx,
-            '.pptx': self._load_pptx,
-            '.csv': self._load_csv,
-            '.txt': self._load_text,
-            '.png': self._load_image,
-            '.jpg': self._load_image,
-            '.jpeg': self._load_image,
-            '.eml': self._load_email
-        }
+logger = get_logger(__name__)
 
-    def load_document(self, file_path: str, file_content: Optional[bytes] = None) -> Dict[str, Any]:
-        ext = Path(file_path).suffix.lower()
-        if ext not in self.supported:
-            raise ValueError(f"Unsupported: {ext}")
-        loader = self.supported[ext]
-        logger.info(f"Loading {file_path}")
-        content = loader(file_path=file_path) if file_content is None else loader(file_content=file_content)
-        return {
-            "filename": Path(file_path).name,
-            "file_type": ext,
-            "content": content,
-            "file_size": len(file_content) if file_content else os.path.getsize(file_path),
-            "metadata": {"source": file_path, "type": ext, "loader": loader.__name__}
-        }
+# Mapping file extensions to their respective loaders
+LOADER_MAPPING = {
+    ".pdf": (PyPDFLoader, {}),
+    ".docx": (Docx2txtLoader, {}),
+    ".pptx": (UnstructuredPowerPointLoader, {}),
+    ".eml": (UnstructuredEmailLoader, {}),
+    # Add other file types and their loaders here
+    # For images, we'll use a more general unstructured loader
+    ".png": (UnstructuredFileLoader, {"mode": "single", "strategy": "hi_res"}),
+    ".jpg": (UnstructuredFileLoader, {"mode": "single", "strategy": "hi_res"}),
+    ".jpeg": (UnstructuredFileLoader, {"mode": "single", "strategy": "hi_res"}),
+}
 
-    def _load_pdf(self, file_path=None, file_content=None) -> str:
-        try:
-            if file_content is not None:
-                try:
-                    pdf = PyPDF2.PdfReader(io.BytesIO(file_content))
-                    return "\n".join(p.extract_text() or "" for p in pdf.pages)
-                except Exception:
-                    result = parser.from_buffer(file_content)
-                    if isinstance(result, dict):
-                        return result.get("content", "") or ""
-                    elif isinstance(result, tuple) and isinstance(result[1], dict):
-                        return result[1].get("content", "") or ""
-                    return ""
-            elif file_path is not None:
-                try:
-                    pdf = PyPDF2.PdfReader(file_path)
-                    return "\n".join(p.extract_text() or "" for p in pdf.pages)
-                except Exception:
-                    result = parser.from_file(file_path)
-                    if isinstance(result, dict):
-                        return result.get("content", "") or ""
-                    elif isinstance(result, tuple) and isinstance(result[1], dict):
-                        return result[1].get("content", "") or ""
-                    return ""
-            else:
-                return ""
-        except Exception as e:
-            logger.error(f"PDF load error: {e}")
-            return ""
 
-    def _load_docx(self, file_path=None, file_content=None) -> str:
-        try:
-            doc = Document(io.BytesIO(file_content)) if file_content is not None else Document(file_path)
-            text = "\n".join(p.text for p in doc.paragraphs)
-            for tbl in doc.tables:
-                for row in tbl.rows:
-                    text += "\n" + "\t".join(cell.text for cell in row.cells)
-            return text
-        except Exception as e:
-            logger.error(f"DOCX load error: {e}")
-            return ""
+def load_single_document(file_path: str) -> List[Document]:
+    """
+    Loads a single document from the given file path and returns its content
+    as a list of LangChain Document objects.
 
-    def _load_pptx(self, file_path=None, file_content=None) -> str:
-        try:
-            prs = Presentation(io.BytesIO(file_content)) if file_content is not None else Presentation(file_path)
-            return "\n".join(
-                getattr(shape, "text", "")
-                for s in prs.slides for shape in s.shapes
-                if hasattr(shape, "text") and isinstance(getattr(shape, "text", None), str)
-            )
-        except Exception as e:
-            logger.error(f"PPTX load error: {e}")
-            return ""
+    Args:
+        file_path (str): The full path to the document file.
 
-    def _load_csv(self, file_path=None, file_content=None) -> str:
-        try:
-            if file_content is not None:
-                df = pd.read_csv(io.BytesIO(file_content))
-            elif file_path is not None:
-                df = pd.read_csv(file_path)
-            else:
-                return ""
-            return df.to_string(index=False)
-        except Exception as e:
-            logger.error(f"CSV load error: {e}")
-            return ""
+    Returns:
+        List[Document]: A list of Document objects, where each object
+                        might represent a page or the entire document.
+    
+    Raises:
+        ValueError: If the file extension is not supported.
+        Exception: For any other loading errors.
+    """
+    ext = "." + file_path.rsplit(".", 1)[-1].lower()
+    if ext not in LOADER_MAPPING:
+        logger.error(f"Unsupported file extension: '{ext}' for file: {file_path}")
+        raise ValueError(f"Unsupported file extension: '{ext}'")
 
-    def _load_text(self, file_path=None, file_content=None) -> str:
-        try:
-            if file_content is not None:
-                return file_content.decode('utf-8', errors='ignore')
-            elif file_path is not None:
-                with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-                    return f.read()
-            else:
-                return ""
-        except Exception as e:
-            logger.error(f"TXT load error: {e}")
-            return ""
+    loader_class, loader_args = LOADER_MAPPING[ext]
+    
+    try:
+        logger.info(f"Loading document: {file_path} using {loader_class.__name__}")
+        loader = loader_class(file_path, **loader_args)
+        documents = loader.load()
+        logger.info(f"Successfully loaded {len(documents)} parts from {file_path}.")
+        return documents
+    except Exception as e:
+        logger.error(f"Failed to load document {file_path}: {e}", exc_info=True)
+        # Return an empty list or re-raise the exception depending on desired behavior
+        return []
 
-    def _load_image(self, file_path=None, file_content=None) -> str:
-        try:
-            if file_content is not None:
-                img = Image.open(io.BytesIO(file_content))
-            elif file_path is not None:
-                img = Image.open(file_path)
-            else:
-                return ""
-            return pytesseract.image_to_string(img)
-        except Exception as e:
-            logger.error(f"Image load error: {e}")
-            return ""
 
-    def _load_email(self, file_path=None, file_content=None) -> str:
-        try:
-            if file_content is not None:
-                msg = email.message_from_bytes(file_content)
-            elif file_path is not None:
-                with open(file_path, 'rb') as f:
-                    msg = email.message_from_binary_file(f)
-            else:
-                return ""
-            text = f"Subject: {msg.get('Subject', '')}\nFrom: {msg.get('From', '')}\nTo: {msg.get('To', '')}\nDate: {msg.get('Date', '')}\n\n"
-            if msg.is_multipart():
-                for part in msg.walk():
-                    if part.get_content_type() == "text/plain":
-                        payload = part.get_payload(decode=True)
-                        if isinstance(payload, bytes):
-                            text += payload.decode('utf-8', errors='ignore')
-                        elif isinstance(payload, str):
-                            text += payload
-            else:
-                payload = msg.get_payload(decode=True)
-                if isinstance(payload, bytes):
-                    text += payload.decode('utf-8', errors='ignore')
-                elif isinstance(payload, str):
-                    text += payload
-            return text
-        except Exception as e:
-            logger.error(f"EML load error: {e}")
-            return ""
+def load_documents_from_directory(directory_path: str) -> List[Document]:
+    """
+    Loads all supported documents from a specified directory.
 
-    def validate_file(self, file_path: str, file_size: int) -> bool:
-        ext = Path(file_path).suffix.lower()
-        return ext in self.supported and file_size <= settings.max_file_size
+    Args:
+        directory_path (str): The path to the directory containing documents.
 
-document_loader = DocumentLoader()
+    Returns:
+        List[Document]: A list of all loaded Document objects from the directory.
+    """
+    all_documents = []
+    path = Path(directory_path)
+    if not path.is_dir():
+        logger.error(f"Provided path is not a directory: {directory_path}")
+        return []
+
+    for file_path in path.iterdir():
+        if file_path.is_file() and file_path.suffix.lower() in LOADER_MAPPING:
+            docs = load_single_document(str(file_path))
+            if docs:
+                all_documents.extend(docs)
+    
+    logger.info(f"Loaded a total of {len(all_documents)} document parts from directory: {directory_path}")
+    return all_documents
+
+
+if __name__ == '__main__':
+    # Example usage:
+    # Create dummy files for testing
+    from config.settings import settings
+    
+    dummy_pdf_path = settings.DOCUMENTS_DIR / "sample.pdf"
+    dummy_docx_path = settings.DOCUMENTS_DIR / "sample.docx"
+    
+    # You would need to place actual files in the `data/documents` directory
+    # For this example, we'll just check if they exist and try to load them.
+    
+    if dummy_pdf_path.exists():
+        print("\n--- Loading PDF ---")
+        pdf_docs = load_single_document(str(dummy_pdf_path))
+        if pdf_docs:
+            print(f"Loaded {len(pdf_docs)} pages from PDF.")
+            print("Metadata of first page:", pdf_docs[0].metadata)
+            print("Content snippet:", pdf_docs[0].page_content[:200])
+    else:
+        print(f"Skipping PDF test: {dummy_pdf_path} not found.")
+
+    if dummy_docx_path.exists():
+        print("\n--- Loading DOCX ---")
+        docx_docs = load_single_document(str(dummy_docx_path))
+        if docx_docs:
+            print(f"Loaded {len(docx_docs)} parts from DOCX.")
+            print("Metadata of first part:", docx_docs[0].metadata)
+            print("Content snippet:", docx_docs[0].page_content[:200])
+    else:
+        print(f"Skipping DOCX test: {dummy_docx_path} not found.")
+
+    print("\n--- Loading all documents from directory ---")
+    all_docs = load_documents_from_directory(str(settings.DOCUMENTS_DIR))
+    print(f"Total documents loaded: {len(all_docs)}")
+

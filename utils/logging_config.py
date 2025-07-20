@@ -1,78 +1,72 @@
+# utils/logging_config.py
+
+"""
+Configures structured logging for the application.
+Ensures that logs are consistent, informative, and easy to parse, which is
+critical for debugging and monitoring in a production environment.
+"""
+
 import logging
-import logging.handlers
-import os
 import sys
-from datetime import datetime
-
-# Fix import path if needed
-try:
-    from config.settings import settings
-except ImportError:
-    settings = None  # Fallback if settings import fails
-
-class AuditLogger:
-    def __init__(self, name: str = "insurance_claim_advisor"):
-        self.logger = logging.getLogger(name)
-        self.setup_logging()
-
-    def setup_logging(self):
-        os.makedirs("logs", exist_ok=True)
-        log_level = getattr(logging, getattr(settings, "log_level", "INFO").upper(), logging.INFO) if settings else logging.INFO
-        self.logger.setLevel(log_level)
-
-        if self.logger.handlers:
-            return
-
-        detailed_fmt = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(module)s:%(lineno)d - %(message)s')
-        console_fmt = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-
-        ch = logging.StreamHandler(sys.stdout)
-        ch.setLevel(logging.INFO)
-        ch.setFormatter(console_fmt)
-        self.logger.addHandler(ch)
-
-        fh = logging.handlers.RotatingFileHandler('logs/app.log', maxBytes=10*1024*1024, backupCount=5)
-        fh.setLevel(logging.DEBUG)
-        fh.setFormatter(detailed_fmt)
-        self.logger.addHandler(fh)
-
-        ah = logging.handlers.RotatingFileHandler('logs/audit.log', maxBytes=10*1024*1024, backupCount=10)
-        ah.setLevel(logging.INFO)
-        ah.setFormatter(detailed_fmt)
-        audit_logger = logging.getLogger("audit")
-        audit_logger.setLevel(logging.INFO)
-        audit_logger.addHandler(ah)
-
-    def log_document_ingestion(self, filename: str, file_size: int, chunks_created: int):
-        logging.getLogger("audit").info(
-            f"DOCUMENT_INGESTION - File: {filename}, Size: {file_size}, Chunks: {chunks_created}, Timestamp: {datetime.now().isoformat()}"
-        )
-
-    def log_query_processing(self, query: str, user_id: str = None):
-        user_id_str = user_id if user_id is not None else ""
-        logging.getLogger("audit").info(
-            f"QUERY_PROCESSING - Query: {query[:100]}..., User: {user_id_str}, Timestamp: {datetime.now().isoformat()}"
-        )
-
-    def log_claim_decision(self, query: str, decision: str, amount: str, justification_count: int, user_id: str = None):
-        user_id_str = user_id if user_id is not None else ""
-        logging.getLogger("audit").info(
-            f"CLAIM_DECISION - Query: {query[:100]}..., Decision: {decision}, Amount: {amount}, Justifications: {justification_count}, User: {user_id_str}, Timestamp: {datetime.now().isoformat()}"
-        )
-
-    def log_error(self, error_type: str, error_message: str, context: str = None):
-        context_str = context if context is not None else ""
-        logging.getLogger("audit").error(
-            f"ERROR - Type: {error_type}, Message: {error_message}, Context: {context_str}, Timestamp: {datetime.now().isoformat()}"
-        )
-
-    def info(self, msg: str): self.logger.info(msg)
-    def debug(self, msg: str): self.logger.debug(msg)
-    def warning(self, msg: str): self.logger.warning(msg)
-    def error(self, msg: str): self.logger.error(msg)
-    def critical(self, msg: str): self.logger.critical(msg)
+from logging.handlers import TimedRotatingFileHandler
 
 def setup_logging():
-    pass  # Already handled by AuditLogger on import
+    """
+    Initializes the logging configuration for the entire application.
+    """
+    # Define the logging format
+    log_format = "%(asctime)s - %(levelname)s - %(name)s - %(module)s.%(funcName)s:%(lineno)d - %(message)s"
+    
+    # Create a logger instance
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
 
-logger = AuditLogger()
+    # Prevent duplicate handlers if this function is called multiple times
+    if logger.hasHandlers():
+        logger.handlers.clear()
+
+    # --- Console Handler ---
+    # Logs messages to the standard output (console)
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(logging.Formatter(log_format))
+    logger.addHandler(console_handler)
+
+    # --- File Handler ---
+    # Rotates log files daily, keeping 7 days of history.
+    # This prevents log files from growing indefinitely.
+    # In a real production setup, logs would be shipped to a centralized
+    # logging service like ELK Stack, Datadog, or Splunk.
+    file_handler = TimedRotatingFileHandler(
+        "app.log", when="midnight", interval=1, backupCount=7
+    )
+    file_handler.setFormatter(logging.Formatter(log_format))
+    logger.addHandler(file_handler)
+    
+    # Set the logging level for noisy libraries to WARNING to reduce clutter
+    logging.getLogger("urllib3").setLevel(logging.WARNING)
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("streamlit").setLevel(logging.WARNING)
+
+    logging.info("Logging configured successfully.")
+
+# Initialize logging when this module is imported
+setup_logging()
+
+def get_logger(name: str) -> logging.Logger:
+    """
+    Returns a logger instance for a specific module.
+    
+    Args:
+        name (str): The name of the logger, typically __name__ of the calling module.
+        
+    Returns:
+        logging.Logger: A configured logger instance.
+    """
+    return logging.getLogger(name)
+
+if __name__ == '__main__':
+    # Example usage
+    logger = get_logger(__name__)
+    logger.info("This is an info message.")
+    logger.warning("This is a warning message.")
+    logger.error("This is an error message.")

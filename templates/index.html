@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Insurance Claim Advisor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #4285f4 0%, #34a853 20%, #fbbc04 40%, #ea4335 60%, #9c27b0 80%, #673ab7 100%);
+            --surface-0: #f8fafc;
+            --surface-1: #ffffff;
+            --surface-2: #f1f5f9;
+            --surface-variant: rgba(60, 64, 67, 0.04);
+            --on-surface: #202124;
+            --on-surface-variant: #5f6368;
+            --outline: rgba(0, 0, 0, 0.12);
+            --primary: #4285f4;
+            --primary-container: rgba(66, 133, 244, 0.08);
+        }
+
+        [data-theme="dark"] {
+            --surface-0: #0d1117;
+            --surface-1: #161b22;
+            --surface-2: #21262d;
+            --surface-variant: rgba(240, 246, 252, 0.06);
+            --on-surface: #f0f6fc;
+            --on-surface-variant: #8b949e;
+            --outline: rgba(240, 246, 252, 0.12);
+            --primary-container: rgba(66, 133, 244, 0.12);
+        }
+
+        body {
+            font-family: 'Inter', 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--surface-0);
+            color: var(--on-surface);
+            font-size: 14px;
+            line-height: 1.4;
+            transition: all 0.2s ease;
+        }
+
+        /* Enhanced scrollbar - Gemini style */
+        ::-webkit-scrollbar { 
+            width: 8px; 
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track { 
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb { 
+            background: var(--outline);
+            border-radius: 4px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+        ::-webkit-scrollbar-thumb:hover { 
+            background: var(--on-surface-variant);
+            background-clip: content-box;
+        }
+
+        /* Gemini-style animations */
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(8px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .animate-slide-up {
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        /* Gemini-style message bubbles */
+        .message-container {
+            padding: 16px 24px;
+            max-width: none;
+        }
+
+        .message-content {
+            max-width: 768px;
+            margin: 0 auto;
+            display: flex;
+            gap: 12px;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .user-avatar {
+            background: var(--primary);
+            color: white;
+        }
+
+        .ai-avatar {
+            background: var(--primary-gradient);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-avatar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .message-bubble {
+            flex: 1;
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .user-message {
+            background: var(--surface-variant);
+            padding: 12px 16px;
+            border-radius: 18px;
+            margin-left: auto;
+            max-width: 80%;
+            border: 1px solid var(--outline);
+        }
+
+        .ai-message {
+            padding-right: 44px;
+        }
+
+        /* Typing indicator - Gemini style */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 0;
+            color: var(--on-surface-variant);
+            font-size: 13px;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--on-surface-variant);
+            border-radius: 50%;
+            animation: pulse 1.4s infinite;
+        }
+        
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        /* Enhanced input - Gemini style */
+        .chat-input-container {
+            background: var(--surface-1);
+            border: 1px solid var(--outline);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            padding: 4px 16px 4px 20px;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            max-width: 768px;
+            margin: 0 auto;
+        }
+        
+        .chat-input-container:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+        }
+
+        .chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 14px 0;
+            font-size: 16px;
+            color: var(--on-surface);
+            font-family: inherit;
+        }
+
+        .chat-input::placeholder {
+            color: var(--on-surface-variant);
+        }
+
+        .send-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-left: 8px;
+        }
+
+        .send-button:hover {
+            background: #3367d6;
+            transform: scale(1.05);
+        }
+
+        .send-button:active {
+            transform: scale(0.95);
+        }
+
+        .send-button:disabled {
+            background: var(--outline);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Sidebar - Gemini style */
+        .sidebar {
+            background: var(--surface-1);
+            border-right: 1px solid var(--outline);
+            width: 280px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--outline);
+        }
+
+        .app-title {
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--on-surface);
+            margin-bottom: 4px;
+        }
+
+        .app-subtitle {
+            font-size: 13px;
+            color: var(--on-surface-variant);
+        }
+
+        /* Enhanced file upload - Gemini style */
+        .upload-section {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .upload-zone {
+            border: 2px dashed var(--outline);
+            border-radius: 12px;
+            padding: 32px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--surface-variant);
+        }
+        
+        .upload-zone:hover {
+            border-color: var(--primary);
+            background: var(--primary-container);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 16px;
+            color: var(--primary);
+        }
+
+        .upload-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--on-surface);
+            margin-bottom: 4px;
+        }
+
+        .upload-subtitle {
+            font-size: 13px;
+            color: var(--on-surface-variant);
+        }
+
+        .upload-status {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .status-processing {
+            background: var(--primary-container);
+            color: var(--primary);
+            border: 1px solid rgba(66, 133, 244, 0.2);
+        }
+
+        .status-success {
+            background: rgba(52, 168, 83, 0.08);
+            color: #137333;
+            border: 1px solid rgba(52, 168, 83, 0.2);
+        }
+
+        .status-error {
+            background: rgba(234, 67, 53, 0.08);
+            color: #c5221f;
+            border: 1px solid rgba(234, 67, 53, 0.2);
+        }
+
+        /* Main content area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--surface-0);
+        }
+
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .input-area {
+            padding: 20px 24px;
+            border-top: 1px solid var(--outline);
+            background: var(--surface-1);
+        }
+
+        /* Decision card - Enhanced Gemini style */
+        .decision-card {
+            background: var(--surface-1);
+            border: 1px solid var(--outline);
+            border-radius: 16px;
+            margin-top: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .decision-header { 
+            padding: 20px 24px; 
+            background: var(--surface-variant); 
+            border-bottom: 1px solid var(--outline); 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .decision-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--on-surface);
+            margin-bottom: 4px;
+        }
+
+        .decision-confidence {
+            font-size: 13px;
+            color: var(--on-surface-variant);
+        }
+
+        .decision-pill { 
+            padding: 6px 12px; 
+            border-radius: 12px; 
+            font-weight: 500; 
+            font-size: 13px; 
+            display: inline-flex; 
+            align-items: center;
+        }
+
+        .pill-covered { 
+            background: rgba(52, 168, 83, 0.12); 
+            color: #137333; 
+        }
+
+        .pill-not-covered { 
+            background: rgba(234, 67, 53, 0.12); 
+            color: #c5221f; 
+        }
+
+        .pill-info { 
+            background: var(--primary-container); 
+            color: var(--primary); 
+        }
+
+        .decision-body { 
+            padding: 24px; 
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--on-surface);
+            margin-bottom: 12px;
+        }
+
+        .reasoning-item, .justification-item { 
+            display: flex; 
+            align-items: flex-start; 
+            padding: 12px 0; 
+            border-bottom: 1px solid var(--outline); 
+        }
+
+        .reasoning-item:last-child, .justification-item:last-child { 
+            border-bottom: none; 
+        }
+
+        .icon-wrapper { 
+            flex-shrink: 0; 
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-right: 12px; 
+            margin-top: 2px;
+        }
+
+        .icon-check { 
+            background: rgba(52, 168, 83, 0.12); 
+            color: #137333; 
+        }
+
+        .icon-book { 
+            background: var(--primary-container); 
+            color: var(--primary); 
+        }
+
+        .follow-up-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 12px; 
+            margin-top: 16px; 
+        }
+
+        .follow-up-card { 
+            background: var(--surface-variant); 
+            padding: 16px; 
+            border-radius: 12px; 
+            border: 1px solid var(--outline); 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            font-size: 14px;
+        }
+
+        .follow-up-card:hover { 
+            border-color: var(--primary); 
+            background: var(--primary-container); 
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Welcome message */
+        .welcome-content {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--on-surface-variant);
+        }
+
+        .welcome-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 24px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+
+        .welcome-title {
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--on-surface);
+            margin-bottom: 8px;
+        }
+
+        .welcome-subtitle {
+            font-size: 16px;
+            color: var(--on-surface-variant);
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .message-container {
+                padding: 12px 16px;
+            }
+            
+            .input-area {
+                padding: 16px;
+            }
+        }
+
+        /* Dark theme toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--surface-variant);
+            border: 1px solid var(--outline);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary-container);
+        }
+
+        /* Brand footer */
+        .brand-footer {
+            padding: 20px;
+            margin-top: auto;
+            border-top: 1px solid var(--outline);
+        }
+
+        .brand-card {
+            background: var(--primary-container);
+            border: 1px solid rgba(66, 133, 244, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .brand-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--on-surface);
+        }
+
+        .brand-subtitle {
+            font-size: 12px;
+            color: var(--on-surface-variant);
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+        </svg>
+    </button>
+
+    <div class="flex h-screen">
+        <!-- Enhanced Left Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="flex items-center mb-4">
+                    <div class="w-8 h-8 mr-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                        🛡️
+                    </div>
+                    <div>
+                        <h1 class="app-title">Claim Advisor</h1>
+                        <p class="app-subtitle">AI-Powered Insurance Assistant</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="upload-section">
+                <div class="upload-zone" onclick="document.getElementById('file-upload').click()">
+                    <div class="upload-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                    </div>
+                    <div class="upload-title">Upload Policy Documents</div>
+                    <div class="upload-subtitle">PDF, DOC, or TXT files</div>
+                </div>
+                <input id="file-upload" type="file" name="files" multiple accept=".pdf,.doc,.docx,.txt" class="hidden">
+                
+                <div id="upload-status"></div>
+            </div>
+            
+            <div class="brand-footer">
+                <div class="brand-card">
+                    <div class="brand-title">HackRx 6.0</div>
+                    <div class="brand-subtitle">Bajaj Finserv Health</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Enhanced Main Chat Area -->
+        <main class="main-content">
+            <div class="chat-area" id="chat-history">
+                <!-- Welcome message -->
+                <div class="welcome-content">
+                    <div class="welcome-icon">🤖</div>
+                    <h2 class="welcome-title">Welcome to Your AI Insurance Advisor</h2>
+                    <p class="welcome-subtitle">I can help you understand your policy and guide you through the claims process. Please upload your documents to get started.</p>
+                </div>
+            </div>
+
+            <!-- Enhanced Chat Input -->
+            <div class="input-area">
+                <form id="chat-form">
+                    <div class="chat-input-container">
+                        <input 
+                            type="text" 
+                            id="chat-input" 
+                            placeholder="Ask me anything about your insurance policy..." 
+                            class="chat-input"
+                            autocomplete="off"
+                        >
+                        <button 
+                            type="submit" 
+                            id="chat-submit-button" 
+                            class="send-button"
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const chatSubmitButton = document.getElementById('chat-submit-button');
+    const chatHistory = document.getElementById('chat-history');
+    const fileInput = document.getElementById('file-upload');
+    const uploadStatus = document.getElementById('upload-status');
+
+    let conversationHistory = [];
+    let isTyping = false;
+
+    // Theme toggle functionality
+    window.toggleTheme = function() {
+        const body = document.body;
+        const currentTheme = body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+    };
+
+    // Initialize theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.body.setAttribute('data-theme', savedTheme);
+
+    // Enhanced File Upload Handler
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) handleFileUpload(fileInput.files);
+    });
+
+    async function handleFileUpload(files) {
+        const formData = new FormData();
+        for (const file of files) formData.append('files', file);
+        
+        uploadStatus.innerHTML = `
+            <div class="upload-status status-processing animate-fade-in">
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                    <span>Processing documents...</span>
+                </div>
+            </div>
+        `;
+        
+        try {
+            const response = await fetch('/ingest', { method: 'POST', body: formData });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || 'Upload failed');
+            
+            uploadStatus.innerHTML = `
+                <div class="upload-status status-success animate-fade-in">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>Ready to answer questions</span>
+                    </div>
+                </div>
+            `;
+            
+            // Clear welcome message
+            if (chatHistory.querySelector('.welcome-content')) {
+                chatHistory.innerHTML = '';
+            }
+        } catch (error) {
+            uploadStatus.innerHTML = `
+                <div class="upload-status status-error animate-fade-in">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>Error: ${error.message}</span>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    // Enhanced Chat Submission Handler
+    chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (isTyping) return;
+        
+        const query = chatInput.value.trim();
+        if (!query) return;
+
+        // Clear welcome message if present
+        if (chatHistory.querySelector('.welcome-content')) {
+            chatHistory.innerHTML = '';
+        }
+
+        addMessageToUI('user', query);
+        conversationHistory.push({ role: 'user', content: query });
+        chatInput.value = '';
+        chatSubmitButton.disabled = true;
+        isTyping = true;
+
+        streamChatResponse(query);
+    });
+
+    function addMessageToUI(role, content) {
+        const messageWrapper = document.createElement('div');
+        messageWrapper.className = 'message-container animate-slide-up';
+        
+        if (role === 'user') {
+            messageWrapper.innerHTML = `
+                <div class="message-content">
+                    <div class="message-avatar user-avatar">👤</div>
+                    <div class="user-message">${content}</div>
+                </div>
+            `;
+        } else {
+            messageWrapper.innerHTML = `
+                <div class="message-content">
+                    <div class="message-avatar ai-avatar">🤖</div>
+                    <div class="message-bubble ai-message">
+                        ${content}
+                    </div>
+                </div>
+            `;
+        }
+        
+        chatHistory.appendChild(messageWrapper);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+        
+        return role === 'user' ? null : messageWrapper.querySelector('.ai-message');
+    }
+
+    function showTypingIndicator() {
+        const typingWrapper = document.createElement('div');
+        typingWrapper.id = 'typing-indicator';
+        typingWrapper.className = 'message-container animate-fade-in';
+        typingWrapper.innerHTML = `
+            <div class="message-content">
+                <div class="message-avatar ai-avatar">🤖</div>
+                <div class="typing-indicator">
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                    <span>Thinking...</span>
+                </div>
+            </div>
+        `;
+        chatHistory.appendChild(typingWrapper);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+        return typingWrapper;
+    }
+
+    async function streamChatResponse(query) {
+        const typingIndicator = showTypingIndicator();
+        let assistantBubbleBody = null;
+        let finalResponseData = null;
+        
+        try {
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    query: query,
+                    chat_history: conversationHistory.slice(0, -1)
+                })
+            });
+
+            if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            let firstChunk = true;
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                
+                buffer += decoder.decode(value, { stream: true });
+                const parts = buffer.split('\n\n');
+                buffer = parts.pop();
+
+                for (const part of parts) {
+                    if (part.startsWith('data: ')) {
+                        const jsonData = part.substring(6);
+                        try {
+                            const data = JSON.parse(jsonData);
+                            if (data.error) throw new Error(data.details || data.error);
+                            
+                            if (firstChunk) {
+                                typingIndicator.remove();
+                                assistantBubbleBody = addMessageToUI('assistant', '');
+                                firstChunk = false;
+                            }
+                            
+                            assistantBubbleBody.innerHTML = createDecisionCard(data);
+                            finalResponseData = data;
+                            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                        } catch (e) {
+                           // Ignore partial JSON parsing errors
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            if (typingIndicator) typingIndicator.remove();
+            if (!assistantBubbleBody) {
+                    addMessageToUI('assistant', `<div class="upload-status status-error"><strong>Error:</strong> ${error.message}</div>`);
+            }
+        } finally {
+            if (finalResponseData) {
+                conversationHistory.push({ role: 'assistant', content: finalResponseData.summary });
+            }
+            chatSubmitButton.disabled = false;
+            isTyping = false;
+        }
+    }
+
+    function createDecisionCard(data) {
+        const decisionClass = {
+            "Covered": "pill-covered", "Approved": "pill-covered",
+            "Not Covered": "pill-not-covered", "Rejected": "pill-not-covered",
+            "Needs More Information": "pill-info"
+        }[data.decision] || "pill-info";
+
+        const reasoningHTML = data.reasoning_steps.map(step => `
+            <div class="reasoning-item">
+                <div class="icon-wrapper icon-check">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <p>${step}</p>
+            </div>`).join('');
+
+        const justificationHTML = data.justification.map(just => `
+            <div class="justification-item">
+                <div class="icon-wrapper icon-book">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-medium text-sm">"${just.text}"</p>
+                    <p class="text-xs text-gray-500 mt-1">Source: ${just.source_file}</p>
+                </div>
+            </div>`).join('');
+
+        const followUpHTML = data.follow_up_questions.map(q => `
+            <div class="follow-up-card" onclick="document.getElementById('chat-input').value='${q}'; document.getElementById('chat-form').requestSubmit();">
+                <p class="text-sm font-medium">${q}</p>
+            </div>`).join('');
+
+        return `
+            <div class="text-base leading-relaxed mb-4">${data.summary}</div>
+            <div class="decision-card">
+                <div class="decision-header">
+                    <div>
+                        <div class="decision-title">Claim Analysis</div>
+                        <div class="decision-confidence">Confidence: ${(data.confidence_score * 100).toFixed(0)}%</div>
+                    </div>
+                    <div class="decision-pill ${decisionClass}">${data.decision}</div>
+                </div>
+                <div class="decision-body">
+                    ${reasoningHTML ? `<div class="section-title">Reasoning Steps</div><div class="mb-6">${reasoningHTML}</div>` : ''}
+                    ${justificationHTML ? `<div class="section-title">Cited Clauses</div><div class="mb-6">${justificationHTML}</div>` : ''}
+                    ${followUpHTML ? `<div class="section-title">Suggested Follow-ups</div><div class="follow-up-grid">${followUpHTML}</div>` : ''}
+                </div>
+            </div>
+        `;
+    }
+});
+</script>
+</body>
+</html>

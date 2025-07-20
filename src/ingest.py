@@ -1,134 +1,123 @@
+# src/ingest.py
+
+"""
+Defines the document ingestion pipeline.
+This module coordinates the process of loading files from a directory,
+chunking them into manageable pieces, and then adding them to the
+Astra DB vector store for future retrieval.
+"""
+
 import os
-import fitz  # PyMuPDF
-import docx2txt
-import csv
-import pptx
-import logging
-import base64
-import pytesseract
-import mimetypes
-import traceback
-from PIL import Image
-from io import BytesIO
-from typing import List, Dict, Optional
-from langchain.docstore.document import Document
-from langchain_community.document_loaders import PyPDFLoader, UnstructuredEmailLoader
-from utils.logging_config import setup_logging
+from typing import List
 
-logger = logging.getLogger(__name__)
-setup_logging()
+from config.settings import settings
+from utils.logging_config import get_logger
+from utils.document_loader import load_documents_from_directory, load_single_document
+from utils.chunking import chunk_documents
+from src.vector_store import vector_store_manager
 
-class DocumentIngestor:
-    def __init__(self):
-        self.supported_extensions = [".pdf", ".docx", ".pptx", ".csv", ".eml", ".jpg", ".jpeg", ".png"]
+logger = get_logger(__name__)
 
-    def read_file(self, file_path: str) -> Optional[str]:
-        ext = os.path.splitext(file_path)[1].lower()
-        try:
-            if ext == ".pdf":
-                return self.read_pdf(file_path)
-            elif ext == ".docx":
-                return self.read_docx(file_path)
-            elif ext == ".pptx":
-                return self.read_pptx(file_path)
-            elif ext == ".csv":
-                return self.read_csv(file_path)
-            elif ext == ".eml":
-                return self.read_email(file_path)
-            elif ext in [".jpg", ".jpeg", ".png"]:
-                return self.read_image(file_path)
-            else:
-                logger.warning(f"Unsupported file type: {ext}")
-                return None
-        except Exception as e:
-            logger.error(f"Error reading {file_path}: {str(e)}")
-            traceback.print_exc()
-            return None
+def process_and_embed_documents(directory_path: str = None, file_paths: List[str] = None):
+    """
+    The main pipeline function to process and embed documents.
+    It can either process all documents in a directory or a specific list of files.
 
-    def read_pdf(self, file_path: str) -> str:
-        loader = PyPDFLoader(file_path)
-        pages = loader.load_and_split()
-        return "\n".join([p.page_content for p in pages])
+    Args:
+        directory_path (str, optional): The path to the directory of documents.
+        file_paths (List[str], optional): A list of absolute paths to specific files.
+    
+    Returns:
+        bool: True if processing was successful, False otherwise.
+    """
+    if not directory_path and not file_paths:
+        logger.error("Must provide either a directory_path or a list of file_paths.")
+        return False
 
-    def read_docx(self, file_path: str) -> str:
-        return docx2txt.process(file_path)
+    try:
+        # Step 1: Load documents from source
+        if directory_path:
+            logger.info(f"Loading documents from directory: {directory_path}")
+            documents = load_documents_from_directory(directory_path)
+        else:
+            logger.info(f"Loading {len(file_paths)} specific documents.")
+            all_docs = []
+            for path in file_paths:
+                all_docs.extend(load_single_document(path))
+            documents = all_docs
 
-    def read_pptx(self, file_path: str) -> str:
-        prs = pptx.Presentation(file_path)
-        text = ""
-        for slide in prs.slides:
-            for shape in slide.shapes:
-                if hasattr(shape, "text"):
-                    text += shape.text + "\n"
-        return text
+        if not documents:
+            logger.warning("No documents were loaded. Ingestion process halted.")
+            return False
+        
+        logger.info(f"Successfully loaded {len(documents)} document parts.")
 
-    def read_csv(self, file_path: str) -> str:
-        with open(file_path, newline='', encoding='utf-8') as csvfile:
-            return "\n".join([", ".join(row) for row in csv.reader(csvfile)])
+        # Step 2: Chunk the loaded documents
+        chunked_docs = chunk_documents(documents)
 
-    def read_image(self, file_path: str) -> str:
-        img = Image.open(file_path)
-        return pytesseract.image_to_string(img)
+        if not chunked_docs:
+            logger.warning("No chunks were created from the documents. Ingestion process halted.")
+            return False
+        
+        logger.info(f"Successfully chunked documents into {len(chunked_docs)} pieces.")
 
-    def read_email(self, file_path: str) -> str:
-        loader = UnstructuredEmailLoader(file_path)
-        docs = loader.load()
-        return "\n".join([doc.page_content for doc in docs])
+        # Step 3: Add the chunks to the vector store
+        # This will also handle embedding generation
+        vector_store_manager.add_documents(chunked_docs)
 
-    def process_upload(self, uploaded_file) -> List[Document]:
-        try:
-            extension = os.path.splitext(uploaded_file.name)[1].lower()
-            mime_type, _ = mimetypes.guess_type(uploaded_file.name)
+        logger.info("Document ingestion and embedding pipeline completed successfully.")
+        return True
 
-            if extension not in self.supported_extensions:
-                raise ValueError("Unsupported file format")
+    except Exception as e:
+        logger.error(f"An error occurred during the ingestion pipeline: {e}", exc_info=True)
+        return False
 
-            content_bytes = uploaded_file.read()
-            file_path = f"/tmp/{uploaded_file.name}"
+def process_uploaded_files(uploaded_files: List) -> (bool, int):
+    """
+    Handles files uploaded via the Streamlit interface.
 
-            with open(file_path, "wb") as f:
-                f.write(content_bytes)
+    Args:
+        uploaded_files (List): A list of Streamlit UploadedFile objects.
 
-            text = self.read_file(file_path)
-            os.remove(file_path)
+    Returns:
+        Tuple[bool, int]: A tuple containing a success flag and the number of processed files.
+    """
+    if not uploaded_files:
+        return False, 0
+    
+    saved_file_paths = []
+    # Save uploaded files to the designated documents directory
+    for uploaded_file in uploaded_files:
+        file_path = os.path.join(settings.DOCUMENTS_DIR, uploaded_file.name)
+        with open(file_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        saved_file_paths.append(file_path)
+        logger.info(f"Saved uploaded file to {file_path}")
 
-            if not text:
-                raise ValueError("Empty content or unsupported format")
+    # Process the newly saved files
+    success = process_and_embed_documents(file_paths=saved_file_paths)
+    
+    return success, len(saved_file_paths)
 
-            metadata = {
-                "source": uploaded_file.name,
-                "type": mime_type or extension
-            }
-            return [Document(page_content=text, metadata=metadata)]
-        except Exception as e:
-            logger.error(f"Error processing document: {str(e)}")
-            traceback.print_exc()
-            return []
 
-    def base64_to_docs(self, base64_string: str, filename: str) -> List[Document]:
-        try:
-            extension = os.path.splitext(filename)[1].lower()
-            mime_type, _ = mimetypes.guess_type(filename)
+if __name__ == '__main__':
+    # Example of running the full ingestion pipeline on the documents directory
+    print("--- Starting Full Document Ingestion Pipeline ---")
+    
+    # This assumes you have placed some sample documents in the `data/documents` folder
+    # as specified in the README.
+    if not any(settings.DOCUMENTS_DIR.iterdir()):
+        print("\nWARNING: The `data/documents` directory is empty.")
+        print("Please add some PDF, DOCX, or other supported files to test the ingestion pipeline.")
+    else:
+        print(f"Processing all documents in: {settings.DOCUMENTS_DIR}")
+        success = process_and_embed_documents(directory_path=str(settings.DOCUMENTS_DIR))
+        
+        if success:
+            print("\nIngestion pipeline completed successfully!")
+            print("Documents have been chunked, embedded, and stored in Astra DB.")
+        else:
+            print("\nIngestion pipeline failed. Please check the 'app.log' file for errors.")
+    
+    print("\n--- Pipeline Test Finished ---")
 
-            if extension not in self.supported_extensions:
-                raise ValueError("Unsupported file format")
-
-            file_path = f"/tmp/{filename}"
-            with open(file_path, "wb") as f:
-                f.write(base64.b64decode(base64_string))
-
-            text = self.read_file(file_path)
-            os.remove(file_path)
-
-            if not text:
-                raise ValueError("Empty content or unsupported format")
-
-            metadata = {
-                "source": filename,
-                "type": mime_type or extension
-            }
-            return [Document(page_content=text, metadata=metadata)]
-        except Exception as e:
-            logger.error(f"Error decoding base64 document: {str(e)}")
-            traceback.print_exc()
-            return []

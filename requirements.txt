@@ -1,89 +1,89 @@
-# tika
-# python-pptx
-# pandas
-# sentence-transformers
-# faiss-cpu
-# openai
-# # pptx
+# 🧠 Core Frameworks
+streamlit
+flask
+python-dotenv
+gunicorn
+
+# 🤖 LLM & Vector Store
+groq
+langchain-groq
+langchain
+langchain-community
+langchain-core
+astrapy
+cassandra-driver
+
+# 📄 Document Processing
+pypdf
+python-docx
+python-pptx
+unstructured[easy_paddle]  # For image and complex PDF parsing
+pytesseract
+opencv-python-headless
+beautifulsoup4
+lxml
+html2text
+
+# 🔍 Embeddings & Machine Learning
+sentence-transformers
+torch
+torchvision
+torchaudio
+transformers
+scikit-learn
+
+# 🔧 Utilities
+requests
+numpy
+pandas
+pyarrow
+fastapi
+uvicorn
 
 
 
-# streamlit 
-# langchain 
-# langchain-community 
-# groq 
-# tika 
-# pandas 
-# python-pptx 
-# sentence-transformers 
-# faiss-cpu 
-# openai
-# Core Dependencies
-streamlit==1.31.0
-python-dotenv==1.0.0
-pydantic==2.5.0
-pandas==2.0.3
-numpy==1.24.3
+# Core Frameworks
+flask
+python-dotenv
+gunicorn
 
-# LangChain and Vector Store
-langchain==0.1.0
-langchain-community==0.0.10
-langchain-astradb==0.1.0
-cassio==0.1.3
-
-# LLM and Embeddings
-groq==0.4.1
-sentence-transformers==2.2.2
-transformers==4.36.0
-torch==2.1.0
+# LLM & Vector Store
+groq
+langchain-groq
+langchain
+langchain-community
+langchain-core
+astrapy
+cassandra-driver
 
 # Document Processing
-tika==2.6.0
-python-docx==0.8.11
-python-pptx==0.6.21
-PyPDF2==3.0.1
-pillow==10.1.0
-pytesseract==0.3.10
-openpyxl==3.1.2
+pypdf
+python-docx
+python-pptx
+unstructured[easy_paddle]
+pytesseract
+opencv-python-headless
+beautifulsoup4
+lxml
+html2text
 
-# Email Processing
-email-validator==2.1.0
-email-reader==1.0.0
+# Embeddings & ML
+sentence-transformers
+torch
+torchvision
+torchaudio
+transformers
+scikit-learn
 
 # Utilities
-requests==2.31.0
-beautifulsoup4==4.12.2
-uuid==1.30
-logging==0.4.9.6
-regex==2023.10.3
+requests
+numpy
+pandas
+pyarrow
+fastapi
+uvicorn
 
-# Development
-pytest==7.4.3
-black==23.12.1
-flake8==6.1.0
 
-###
-streamlit>=1.28.0
-langchain>=0.1.0
-langchain-astradb>=0.3.0
-langchain-community>=0.0.10
-langchain-groq>=0.0.3
-sentence-transformers>=2.2.2
-pydantic>=2.4.0
-python-dotenv>=1.0.0
-pandas>=2.0.0
-numpy>=1.24.0
-tika>=2.6.0
-# python-docx>=0.8.11
-# python-pptx>=0.6.21
-pytesseract>=0.3.10
-Pillow>=10.0.0
-cassandra-driver>=3.28.0
-astrapy>=0.7.0
-groq>=0.4.0
-requests>=2.31.0
-email-validator>=2.0.0
-watchdog>=3.0.0
-
-python-docx==1.2.0
-python-pptx==1.0.2
+langchain-astradb # <-- New package for AstraDB
+langchain-huggingface # <-- New package for embeddings
+astrapy # The base library for Astra
