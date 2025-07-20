@@ -47,6 +47,8 @@ insurance_claim_advisor/
     └── documents/         # Place initial documents here
 ```
 
+
+
 ## Setup & Running the Application
 
 1.  **Prerequisites**:
