@@ -84,6 +84,9 @@ fastapi
 uvicorn
 
 
-langchain-astradb # <-- New package for AstraDB
-langchain-huggingface # <-- New package for embeddings
-astrapy # The base library for Astra
+langchain-astradb
+ # <-- New package for AstraDB
+langchain-huggingface 
+# <-- New package for embeddings
+astrapy
+ # The base library for Astra
