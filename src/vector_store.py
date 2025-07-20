@@ -7,7 +7,7 @@ component, providing a centralized point for all database operations like
 adding documents and retrieving them.
 """
 
-# --- Updated Imports ---
+
 # Use the new, dedicated packages as recommended by LangChain deprecation warnings.
 from langchain_astradb import AstraDBVectorStore
 from langchain_huggingface import HuggingFaceEmbeddings

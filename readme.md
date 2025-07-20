@@ -1,6 +1,3 @@
-# =================================================================
-# File: README.md
-# =================================================================
 # Smart Insurance Claim Advisor - HackRx 6.0
 
 This project is a production-grade AI chatbot built for the Bajaj Finserv Health HackRx 6.0 competition. It uses a high-speed RAG (Retrieval-Augmented Generation) pipeline to analyze insurance policy documents and provide instant, explainable decisions on user claims.
